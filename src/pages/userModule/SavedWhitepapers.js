@@ -439,7 +439,7 @@ const SavedWhitepapers = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "Companies | Velzon - React Admin & Dashboard Template";
+  document.title = "InfiniteB2B";
   return (
     <React.Fragment>
      <div className="page-content">

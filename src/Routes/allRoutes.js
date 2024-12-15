@@ -286,6 +286,8 @@ import VendorLogin from "../pages/vendorModule/VendorLogin/VendorLogin";
 import VendorAddWhitepaper from "../pages/vendorModule/Whitepaper/VendorAddWhitepapers";
 import VendorAllWhitepapers from "../pages/vendorModule/Whitepaper/vendorAllWhitepapers ";
 import GetUserToken from "../pages/userModule/GetUserToken";
+import AllUser from "../pages/Pages/user/admin/AllUser";
+import { useProfile } from "../Components/Hooks/UserHooks";
 
 
 
@@ -352,6 +354,7 @@ const authProtectedRoutes = [
   //uses
   { path: "/admin/user-addadmin", component: <AddAdmin/> },
   { path: "/admin/user-alladmin", component: <AllAdmin/> },
+  { path: "/admin/user-allUsers", component: <AllUser/> },
   { path: "/admin/user-addcampaign-managers", component: <AddCampaignManagers/> },
   { path: "/admin/user-allcampaign-managers", component: <AllCampaignManagers/> },
   { path: "/admin/user-addeditors", component: <AddEditors /> },
@@ -377,16 +380,7 @@ const authProtectedRoutes = [
     component: <Navigate to="/admin/login" />,
   },
   { path: "*", component: <Navigate to="/admin/dashboard" /> },
-  { path: "/vendor", component: <Navigate to="/vendor/login" /> },
-  { path: "/vendor/dashboard", component: <VendorDashboard /> }, 
-
-//**************************************************************** */
-//vendor module
-{ path: "/vendor/add-whitepapers", component: <VendorAddWhitepaper /> }, 
-{ path: "/vendor/all-whitepapers", component: <VendorAllWhitepapers /> }, 
-
-{ path: "/vendor/profile", component: <VendorProfile /> }, 
-
+  { path: "/", component: <AdminDashboard /> },
 //**************************************************************** */
 //user module
 { path: "/user/dashboard", component: <UserDashboard /> }, 
@@ -396,6 +390,32 @@ const authProtectedRoutes = [
 { path: "/user/profile", component: <UserProfile /> }, 
 
 
+];
+const vendorProtectedRoutes = [
+  //Projects
+  // { path: "/apps-projects-list", component: <ProjectList /> },
+  { path: "/apps-projects-overview", component: <ProjectOverview /> },
+  { path: "/widgets", component: <Widgets /> },
+  { path: "/pages-starter", component: <Starter /> },
+  { path: "/pages-profile", component: <SimplePage /> },
+  { path: "/pages-profile-settings", component: <Settings /> },
+  //User Profile
+  { path: "/profile", component: <UserProfile /> },
+  {
+    path: "/admin/login",
+    exact: true,
+    component: <Navigate to="/vendor/login" />,
+  },
+  { path: "*", component: <Navigate to="/vendor/dashboard" /> },
+  { path: "/", exact: true, component: <VendorDashboard /> },
+  { path: "/vendor/dashboard", component: <VendorDashboard /> },
+
+  //**************************************************************** */
+  //vendor module
+  { path: "/vendor/add-whitepapers", component: <VendorAddWhitepaper /> },
+  { path: "/vendor/all-whitepapers", component: <VendorAllWhitepapers /> },
+
+  { path: "/vendor/profile", component: <VendorProfile /> },
 ];
 
 const publicRoutes = [
@@ -426,4 +446,4 @@ const publicRoutes = [
 
 ];
 
-export { authProtectedRoutes, publicRoutes };
+export { authProtectedRoutes, publicRoutes, vendorProtectedRoutes };

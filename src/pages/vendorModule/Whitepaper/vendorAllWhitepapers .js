@@ -1,7 +1,7 @@
 
 
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   Col,
   Container,
@@ -43,7 +43,11 @@ import axios from "axios";
 
 const VendorAllWhitepapers = () => {
 
+const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
  const Navigate = useNavigate()
+ const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search).get('status');
   const [isEdit, setIsEdit] = useState(false);
   const [company, setCompany] = useState([]);
 
@@ -100,15 +104,14 @@ const VendorAllWhitepapers = () => {
     
   },[])
   const fetchCategories=async()=>{
-    // const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJwYW5rYWouZ2F3YWRlQG9kdGVhbXMuY29tIiwiaWF0IjoxNzMzMDYyNzIwLCJleHAiOjE3MzM0MjI3MjB9.nQqJzQUW4W57Axcm60aOugWdgX5TTePuPm8uX9SyypPnj1-MCSmbbmEZ9ybBd6IB4Te99NLV7w1HR-mVwhh_6g"
     const config = {
       headers: {
+        'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`
       }
     };
     // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
-    const data = await axios.get("https://infiniteb2b.com:8443/api/vendor/get-allwhitepapers",config)
+    const data = await axios.get(`https://infiniteb2b.com:8443/api/vendor/get-allwhitepapers?status=${queryParams}`,config)
     // console.log("data", data)
     setCategories(data.data)
     
@@ -381,7 +384,7 @@ const VendorAllWhitepapers = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "Companies | Velzon - React Admin & Dashboard Template";
+  document.title = "InfiniteB2B";
   return (
     <React.Fragment>
      <div className="page-content">
@@ -448,12 +451,11 @@ const VendorAllWhitepapers = () => {
                         data={(categories ?? [])}
                         isGlobalFilter={true}
                         isAddUserList={false}
-                        customPageSize={8}
+                        customPageSize={10}
                         className="custom-header-css"
                         divClass="table-responsive table-card mb-2"
                         tableClass="align-middle table-nowrap"
                         theadClass="table-light"
-                        
                         // handleCompanyClick={handleCompanyClicks}
                         // isCompaniesFilter={true}
                         SearchPlaceholder='Search for WhitePapers...'

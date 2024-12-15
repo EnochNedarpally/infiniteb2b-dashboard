@@ -24,7 +24,9 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  FormFeedback
+  FormFeedback,
+  Dropdown,
+  Alert
 } from "reactstrap";
 
 import { isEmpty } from "lodash";
@@ -46,11 +48,11 @@ import DeleteModal from "../../../../Components/Common/DeleteModal";
 import axios from "axios";
 
 const AllAdmin = () => {
-
+  const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
   const Navigate =useNavigate();
 
   const handleAddCategory = () => {
-    Navigate('/user-addadmin'); 
+    Navigate('/admin/user-addadmin'); 
   };
   const [isEdit, setIsEdit] = useState(false);
   const [company, setCompany] = useState([]);
@@ -59,6 +61,8 @@ const AllAdmin = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
   const [modal, setModal] = useState(false);
+  const [status, setStatus] = useState("");
+  const [adminId, setAdminId] = useState("")
 
   const industrytype = [
     {
@@ -104,7 +108,6 @@ const AllAdmin = () => {
     
   },[])
   const fetchCategories=async()=>{
-    const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
     // const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJTVVBFUkFETUlOIl0sInN1YiI6InN1cGVyYWRtaW5AZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMjg3MDQzMywiZXhwIjoxNzMzMjMwNDMzfQ.ne7d9Mseaabh-uNJEx7GOaa1Vd7G8JTLF8M45ZkDGKNm5N9u6IMSMMHvz5EdhYEJxljd1qCFjoXtUM42rlHmGQ"
     const config = {
       headers: {
@@ -334,7 +337,11 @@ const AllAdmin = () => {
         accessorKey: "location",
         enableColumnFilter: false,
       },
-    
+      {
+        header: "Status",
+        accessorKey: "status",
+        enableColumnFilter: false,
+      },
       {
         header: () => <div className="text-center">Action</div>, // Centered header
         accessorKey: "status", // Key for this column
@@ -346,13 +353,17 @@ const AllAdmin = () => {
                 >
                   <i className="ri-pencil-fill align-bottom text-muted"></i>
                 </Link> */}
-              <button
+               <button
                 className="btn btn-primary btn-sm me-2"
-                onClick={() => handleAction("approve", cell.row.original)}
+                onClick={() => {
+                  setModal(!modal)
+                  setAdminId(cell.row.original.id)
+                }}
+
               >
                 Edit
               </button>
-              <button
+              {/*<button
                 className="btn btn-success btn-sm me-2"
                 onClick={() => handleAction("approve", cell.row.original)}
               >
@@ -364,7 +375,7 @@ const AllAdmin = () => {
                 onClick={() => handleAction("reject", cell.row.original)}
               >
                 Inactive
-              </button>
+              </button> */}
             </div>
           );
         },
@@ -380,7 +391,25 @@ const AllAdmin = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "Companies | Velzon - React Admin & Dashboard Template";
+const handleStatus = async()=>{
+  const formData = new FormData();
+    formData.append('id', adminId);        // Append ID
+    formData.append('status', status); 
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+      }
+    };
+    await axios.put("https://infiniteb2b.com:8443/admin/update/status",formData  ,config)
+    setModal(false)
+  } catch (error) {
+    toast.error(error)
+    console.log(error)
+  }
+}
+  document.title = "InfiniteB2B";
   return (
     <React.Fragment>
      <div className="page-content">
@@ -418,7 +447,7 @@ const AllAdmin = () => {
            
                     <div className="d-flex justify-content-between align-items-center my-2 mx-1">
   <h4 className="card-title mb-0">All Admin List</h4>
-  <Button 
+  <Button
   color="secondary" 
   style={{ backgroundColor: 'purple', borderColor: 'purple' }} 
   onClick={handleAddCategory}
@@ -436,7 +465,7 @@ const AllAdmin = () => {
                         data={(categories ?? [])}
                         isGlobalFilter={true}
                         isAddUserList={false}
-                        customPageSize={8}
+                        customPageSize={10}
                         className="custom-header-css"
                         divClass="table-responsive table-card mb-2"
                         tableClass="align-middle table-nowrap"
@@ -449,11 +478,10 @@ const AllAdmin = () => {
                   {<Modal id="showModal" isOpen={modal} toggle={toggle} centered fullscreen>
                     <ModalHeader className="bg-info-subtle p-3" toggle={toggle}>
                       {/* {!!isEdit ? "Edit Company" : "Add Company"} */}
-                      Update Category
+                      Edit Status
                     </ModalHeader>
                     <Form className="tablelist-form" onSubmit={(e) => {
                       e.preventDefault();
-                      validation.handleSubmit();
                       return false;
                     }}>
                       <ModalBody>
@@ -467,119 +495,23 @@ const AllAdmin = () => {
                                 htmlFor="owner-field"
                                 className="form-label"
                               >
-                              Category Name
+                              Status
                               </Label>
                               <Input
-                                name="owner"
-                                id="owner-field"
-                                className="form-control"
-                                placeholder="Enter Category Name"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.owner || ""}
-                                invalid={
-                                  validation.touched.owner && validation.errors.owner ? true : false
-                                }
-                              />
-                              {validation.touched.owner && validation.errors.owner ? (
-                                <FormFeedback type="invalid">{validation.errors.owner}</FormFeedback>
-                              ) : null}
-                            </div>
-                          </Col>
-                        
-                           <Col lg={6}>
-                           <div>
-                              <Label
-                                htmlFor="employee-field"
-                                className="form-label"
+                                bsSize="lg"
+                                className="mb-3"
+                                type="select"
+                                onChange={(e)=>setStatus(e.target.value)}
                               >
-                         No. of WhitePapers
-                              </Label>
-                              <Input
-                                name="employee"
-                                id="employee-field"
-                                className="form-control"
-                                placeholder="Enter No. of WhitePapers"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.employee || ""}
-                                invalid={
-                                  validation.touched.employee && validation.errors.employee ? true : false
-                                }
-                              />
-                              {validation.touched.employee && validation.errors.employee ? (
-                                <FormFeedback type="invalid">{validation.errors.employee}</FormFeedback>
-                              ) : null}
+                                <option value="1">
+                                  Approve
+                                </option>
+                                <option value="2">
+                                  Reject
+                                </option>
+                              </Input>
                             </div>
-                            </Col> 
-                        <Col lg={6}>
-                            <div>
-                              <Label
-                                htmlFor="location-field"
-                                className="form-label"
-                              >
-                                Total Subscibers
-                              </Label>
-                              <Input
-                                name="location"
-                                id="star_value-field"
-                                className="form-control"
-                                placeholder="Enter Total Subscibers"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.location || ""}
-                                invalid={
-                                  validation.touched.location && validation.errors.location ? true : false
-                                }
-                              />
-                              {validation.touched.location && validation.errors.location ? (
-                                <FormFeedback type="invalid">{validation.errors.location}</FormFeedback>
-                              ) : null}
-
-                            </div>
-                          </Col>
-                          <Col lg={4}>
-                            <div>
-                              <Label
-                                htmlFor="employee-field"
-                                className="form-label"
-                              >
-                             Total Downloads
-                              </Label>
-                              <Input
-                                name="employee"
-                                id="employee-field"
-                                className="form-control"
-                                placeholder="Enter Total Downloads"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.employee || ""}
-                                invalid={
-                                  validation.touched.employee && validation.errors.employee ? true : false
-                                }
-                              />
-                              {validation.touched.employee && validation.errors.employee ? (
-                                <FormFeedback type="invalid">{validation.errors.employee}</FormFeedback>
-                              ) : null}
-                            </div>
-                           
-                          </Col>
+                          </Col> 
                        
                           
                         </Row>
@@ -589,7 +521,7 @@ const AllAdmin = () => {
                           <Button color="light" onClick={() => { setModal(false); }} > Close </Button>
                           
 
-                          <Button   style={{ backgroundColor: 'purple', borderColor: 'purple' }}  type="submit" color="success" id="add-btn" >  Update</Button>
+                          <Button onClick={()=>{handleStatus()}}  style={{ backgroundColor: 'purple', borderColor: 'purple' }}  type="submit" color="success" id="add-btn" >  Update</Button>
                         </div>
                       </ModalFooter>
                     </Form>

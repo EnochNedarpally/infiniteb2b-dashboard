@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const AddWhitepaper = () => {
   const [file, setFile] = useState(null);
@@ -22,6 +24,7 @@ const AddWhitepaper = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
   // console.log("token", token)
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJzdWZpeWFuLmluYW1kYXJAZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMTY3MjE2OSwiZXhwIjoxNzMyMDMyMTY5fQ.O4c9G3wpkepnQkM8AbUbdeKRdGpxI6-qmUUBk19Pmz2PilIKu-vjyD6LS1un-B36UWFEnkonANJOOdvSAK23_A'
+  const navigate = useNavigate()
   const config = {
 
     headers: {
@@ -33,9 +36,7 @@ const AddWhitepaper = () => {
   }, []);
   const fetchRandomRecords = async () => {
     try {
-      const response = await axios.get('https://infiniteb2b.com:8443/api/category');
-
-     
+      const response = await axios.get('https://infiniteb2b.com:8443/api/category',config);
       setOptions(response.data.data.slice(0, 10).map(item => item.name))
       // console.log("response", response)
     } catch (error) {
@@ -106,8 +107,7 @@ const AddWhitepaper = () => {
     setSuccess(true);
 
     try {
-      // const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-      const token = 'eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJTVVBFUkFETUlOIl0sInN1YiI6InN1cGVyYWRtaW5AZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMzMxMTM5MiwiZXhwIjoxNzMzNjcxMzkyfQ.lGODtP22QVI98U0h1UgnZk3tqLJzckz7ri0FqJCtpCK8VdBj_x1IosPE_BYy8p_2ZDv_2qxrBRTqycA17qJrHA';
+      const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.post(
         'https://infiniteb2b.com:8443/api/vendor/add-solutionset',
         
@@ -119,18 +119,18 @@ const AddWhitepaper = () => {
           },
         }
       );
-      if (response.status === 200) {
+      if (response.message.toLowerCase() == "success") {
         setSuccess(true);
         setFile(null);
         setCategory('');
         setDesc('');
         setTitle('');
         setImage(null);
-
-
+        navigate("/admin/all-whitepapers")
       }
     } catch (err) {
       // setError(err?.response?.data?.message ?? 'Error uploading file');
+      toast.error(err?.response?.data?.message ?? 'Error uploading file')
       setError(err?.response?.data?.message ?? 'Error uploading file');
       console.log(err, "err")
     } finally {
@@ -143,6 +143,7 @@ const AddWhitepaper = () => {
       <div className="page-content">
         <Container fluid>
           {/* <BreadCrumb title="File Upload" pageTitle="Forms" /> */}
+          <ToastContainer closeButton={false} limit={1} />
           <Row>
             <Col lg={12}>
               <Card>
@@ -304,8 +305,6 @@ const AddWhitepaper = () => {
                     </button>
                   </form>
 
-                  {success && <p className="text-success mt-3">File uploaded successfully!</p>}
-                  {/* {error && <p className="text-danger mt-3">{error}</p>} */}
                 </CardBody>
               </Card>
             </Col>

@@ -6,6 +6,7 @@ export const initialState = {
   loading: false,
   isUserLogout: false,
   errorMsg: false, // for error
+  role:""
 };
 
 const loginSlice = createSlice({
@@ -23,6 +24,9 @@ const loginSlice = createSlice({
       state.loading = false;
       state.errorMsg = false;
     },
+    getUserRole(state, action) {
+      state.role=action.payload
+    },
     logoutUserSuccess(state, action) {
       state.isUserLogout = true
     },
@@ -38,7 +42,8 @@ export const {
   apiError,
   loginSuccess,
   logoutUserSuccess,
-  reset_login_flag
+  reset_login_flag,
+  getUserRole
 } = loginSlice.actions
 
 export default loginSlice.reducer;

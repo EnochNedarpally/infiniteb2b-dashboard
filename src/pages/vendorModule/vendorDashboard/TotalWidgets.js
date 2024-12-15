@@ -15,8 +15,7 @@ const TotalecomWidgets = () => {
     
       // Function to fetch categories from the API
       const fetchCategories = async () => {
-        // const token =
-          "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJwYW5rYWouZ2F3YWRlQG9kdGVhbXMuY29tIiwiaWF0IjoxNzMzMDYyNzIwLCJleHAiOjE3MzM0MjI3MjB9.nQqJzQUW4W57Axcm60aOugWdgX5TTePuPm8uX9SyypPnj1-MCSmbbmEZ9ybBd6IB4Te99NLV7w1HR-mVwhh_6g";
+        // const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJwYW5rYWouZ2F3YWRlQG9kdGVhbXMuY29tIiwiaWF0IjoxNzMzMDYyNzIwLCJleHAiOjE3MzM0MjI3MjB9.nQqJzQUW4W57Axcm60aOugWdgX5TTePuPm8uX9SyypPnj1-MCSmbbmEZ9ybBd6IB4Te99NLV7w1HR-mVwhh_6g";
         const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
         const config = {
           headers: {
@@ -41,10 +40,10 @@ const TotalecomWidgets = () => {
         }
       };
       const hardcodedRoutes = [
-        '/vendor/all-whitepapers',
-        '/vendor/all-whitepapers',
-        '/vendor/all-whitepapers',
-        '/vendor/all-whitepapers',
+        '/vendor/all-whitepapers?status=',
+        '/vendor/all-whitepapers?status=1',
+        '/vendor/all-whitepapers?status=2',
+        '/vendor/all-whitepapers?status=3',
     ];
   
 

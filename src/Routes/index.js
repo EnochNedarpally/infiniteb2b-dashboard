@@ -1,15 +1,36 @@
-import React from 'react';
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom";
 
 //Layouts
 import NonAuthLayout from "../Layouts/NonAuthLayout";
 import VerticalLayout from "../Layouts/index";
 
 //routes
-import { authProtectedRoutes, publicRoutes } from "./allRoutes";
+import { authProtectedRoutes, publicRoutes, vendorProtectedRoutes } from "./allRoutes";
 import { AuthProtected } from './AuthProtected';
+import { useProfile } from '../Components/Hooks/UserHooks';
 
 const Index = () => {
+const authUserData = JSON.parse(sessionStorage.getItem("authUser"));
+const [privateRoutes, setPrivateRoutes] = useState(authProtectedRoutes)
+const navigate = useNavigate()
+
+
+useEffect(()=>{
+    if(authUserData?.data?.role){
+    const routeData = getURL(authUserData.data.role)
+    setPrivateRoutes(routeData)
+    }
+},[authUserData])
+const getURL = (role)=>{
+    if(role == "SUPERADMIN") return authProtectedRoutes
+    if(role == "vendor"){
+        // navigate("/vendor/login")
+        return vendorProtectedRoutes
+    } 
+    if(role == "user ") return authProtectedRoutes
+    else return []
+  }
     return (
         <React.Fragment>
             <Routes>
@@ -29,7 +50,7 @@ const Index = () => {
                 </Route>
 
                 <Route>
-                    {authProtectedRoutes.map((route, idx) => (
+                    {privateRoutes.map((route, idx) => (
                         <Route
                             path={route.path}
                             element={

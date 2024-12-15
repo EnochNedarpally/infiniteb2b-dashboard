@@ -43,6 +43,8 @@ import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
 
 const ReviewVendor = () => {
+
+  const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
  
   const [isEdit, setIsEdit] = useState(false);
   const [company, setCompany] = useState([]);
@@ -51,6 +53,8 @@ const ReviewVendor = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
   const [modal, setModal] = useState(false);
+  const [status, setStatus] = useState("1");
+  const [vendorId, setVendorId] = useState("")
 
   const industrytype = [
     {
@@ -90,12 +94,10 @@ const ReviewVendor = () => {
 
 
   useEffect(()=>{
-    
-    fetchCategories()
-    
-  },[])
+    fetchCategories() 
+  },[modal])
   const fetchCategories=async()=>{
-    const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
+    
     // const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJTVVBFUkFETUlOIl0sInN1YiI6InN1cGVyYWRtaW5AZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMjg3MDQzMywiZXhwIjoxNzMzMjMwNDMzfQ.ne7d9Mseaabh-uNJEx7GOaa1Vd7G8JTLF8M45ZkDGKNm5N9u6IMSMMHvz5EdhYEJxljd1qCFjoXtUM42rlHmGQ"
     const config = {
       headers: {
@@ -104,7 +106,6 @@ const ReviewVendor = () => {
     };
     // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
     const data = await axios.get("https://infiniteb2b.com:8443/admin/get-reviewvendor",config)
-   console.log("databnbnbn", data)
     setCategories(data.data)
     
   }
@@ -213,6 +214,26 @@ const ReviewVendor = () => {
   //   dispatch,
   //   isCompaniesCreated,
   // ]);
+  const handleStatus = async () => {
+    const API_ENDPOINT = status == "1" ? "approve-vendor" : "reject-vendor"
+    const formData = new FormData();
+    formData.append('vendorId', vendorId);
+    try {
+      console.log("clicked", status)
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      await axios.put(`https://infiniteb2b.com:8443/admin/${API_ENDPOINT}`, formData, config)
+      // const data = await axios.get("https://infiniteb2b.com:8443/admin/get-reviewvendor",config)
+      setModal(false)
+    } catch (error) {
+      console.log(error)
+      toast.error(error)
+    }
+  }
 
   // Checked All
   const checkedAll = useCallback(() => {
@@ -252,7 +273,7 @@ const ReviewVendor = () => {
     setSelectedCheckBoxDelete(ele);
   };
 
-
+  
   // Column
   const columns = useMemo(
     () => [
@@ -299,105 +320,7 @@ const ReviewVendor = () => {
       },
       {
         header: "Status",
-        accessorKey: "status",
-        cell: ({ cell }) => {
-          const value = cell.getValue(); 
-          
-                   
-
-
-         const handleApprove = async (id) => {
-    
-          const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    // const token = "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJTVVBFUkFETUlOIl0sInN1YiI6InN1cGVyYWRtaW5AZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMjg3MDQzMywiZXhwIjoxNzMzMjMwNDMzfQ.ne7d9Mseaabh-uNJEx7GOaa1Vd7G8JTLF8M45ZkDGKNm5N9u6IMSMMHvz5EdhYEJxljd1qCFjoXtUM42rlHmGQ";
-
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data', 
-        },
-    };
-
-    
-    const formData = new FormData();
-    formData.append('vendorId', id); 
-
-    try {
-      
-        const response = await axios.put(
-            "https://infiniteb2b.com:8443/admin/approve-vendor",
-            formData, 
-            config
-        );
-
-      
-        alert(response.message);
-     
-    } catch (error) {
-   
-        console.error("Error approving vendor:", error.response ? error.response.data : error.message);
-
-    }
-};
-         const handleReject = async (id) => {
-          const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-
-    // const token = "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJTVVBFUkFETUlOIl0sInN1YiI6InN1cGVyYWRtaW5AZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMjg3MDQzMywiZXhwIjoxNzMzMjMwNDMzfQ.ne7d9Mseaabh-uNJEx7GOaa1Vd7G8JTLF8M45ZkDGKNm5N9u6IMSMMHvz5EdhYEJxljd1qCFjoXtUM42rlHmGQ";
-
-    const config = {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data', 
-        },
-    };
-
-
-    const formData = new FormData();
-    formData.append('vendorId', 2); 
-
-    try {
-        // Making the PUT API call
-        const response = await axios.put(
-            "https://infiniteb2b.com:8443/admin/reject-vendor",
-            formData, 
-            config
-        );
-
-        alert(response.message);
-     
-
-     
-    } catch (error) {
-       
-        console.error("Error approving vendor:", error.response ? error.response.data : error.message);
-
-    }
-};
-
-    
-
-      
-          return (
-            <div>
-            <button
-  className={`btn btn-sm ${value === "Approve" ? "btn-success" : "btn-outline-success"}`}
-  style={{ marginRight: "8px" }}
-  onClick={() => handleApprove("id")}
-  
->
-Approve
-</button>
-
-              <button
-              style={{ marginRight: "8px" }}
-                className={`ml-2 btn btn-sm ${value === "Reject" ? "btn-danger" : "btn-outline-danger"}`}
-                onClick={() => handleReject("Reject")}
-              >
-                Reject
-              </button>
-            </div>
-          );
-        },
+        accessorKey: "status", 
         enableColumnFilter: false,
       },
 // {
@@ -494,31 +417,35 @@ Approve
 // },
 
       
-      {
-        header: "Action",
-        cell: (cell) => {
-          return (
-            <ul className="list-inline hstack gap-2 mb-0">
-           
-              <li className="list-inline-item" title="View">
-                <Link to="/view-category" 
-                  onClick={() => { const companyData = cell.row.original; setInfo(companyData); }}
-                >
-                  <i className="ri-eye-fill align-bottom text-muted"></i>
-                </Link>
-              </li>
-              <li className="list-inline-item" title="Edit">
-                <Link className="edit-item-btn" to="#"
-                  onClick={() => { const companyData = cell.row.original; handleCompanyClick(companyData); }}
-                >
-                  <i className="ri-pencil-fill align-bottom text-muted"></i>
-                </Link>
-              </li>
-           
-            </ul>
-          );
-        },
-      },
+{
+  header: "Action",
+  cell: (cell) => {
+    return (
+      <ul className="list-inline hstack gap-2 mb-0">
+     
+        {/* <li className="list-inline-item" title="View">
+          <Link to="/view-category" 
+            onClick={() => { const companyData = cell.row.original; setInfo(companyData); }}
+          >
+            <i className="ri-eye-fill align-bottom text-muted"></i>
+          </Link>
+        </li> */}
+        <li className="list-inline-item" title="Edit">
+          <Link className="edit-item-btn" to="#"
+            // onClick={() => { const companyData = cell.row.original; handleCompanyClick(companyData); }}
+            onClick={() => {
+              setModal(!modal)
+              setVendorId(cell.row.original.id)
+            }}
+          >
+            <i className="ri-pencil-fill align-bottom text-muted"></i>
+          </Link>
+        </li>
+     
+      </ul>
+    );
+  },
+},
     ],
     [handleCompanyClick, checkedAll]
   );
@@ -529,7 +456,7 @@ Approve
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "infiniteb2b";
+  document.title = "InfiniteB2B";
   return (
     <React.Fragment>
      <div className="page-content">
@@ -587,7 +514,7 @@ Approve
                         data={(categories ?? [])}
                         isGlobalFilter={true}
                         isAddUserList={false}
-                        customPageSize={8}
+                        customPageSize={10}
                         className="custom-header-css"
                         divClass="table-responsive table-card mb-2"
                         tableClass="align-middle table-nowrap"
@@ -603,11 +530,10 @@ Approve
                   {<Modal id="showModal" isOpen={modal} toggle={toggle} centered fullscreen>
                     <ModalHeader className="bg-info-subtle p-3" toggle={toggle}>
                       {/* {!!isEdit ? "Edit Company" : "Add Company"} */}
-                      Update Category
+                      Edit Status
                     </ModalHeader>
                     <Form className="tablelist-form" onSubmit={(e) => {
                       e.preventDefault();
-                      validation.handleSubmit();
                       return false;
                     }}>
                       <ModalBody>
@@ -621,120 +547,24 @@ Approve
                                 htmlFor="owner-field"
                                 className="form-label"
                               >
-                              Category Name
+                              Status
                               </Label>
                               <Input
-                                name="owner"
-                                id="owner-field"
-                                className="form-control"
-                                placeholder="Enter Category Name"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.owner || ""}
-                                invalid={
-                                  validation.touched.owner && validation.errors.owner ? true : false
-                                }
-                              />
-                              {validation.touched.owner && validation.errors.owner ? (
-                                <FormFeedback type="invalid">{validation.errors.owner}</FormFeedback>
-                              ) : null}
-                            </div>
-                          </Col>
-                          
-                           <Col lg={6}>
-                           <div>
-                              <Label
-                                htmlFor="employee-field"
-                                className="form-label"
+                                bsSize="lg"
+                                className="mb-3"
+                                type="select"
+                                onChange={(e)=>setStatus(e.target.value)}
                               >
-                         No. of WhitePapers
-                              </Label>
-                              <Input
-                                name="employee"
-                                id="employee-field"
-                                className="form-control"
-                                placeholder="Enter No. of WhitePapers"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.employee || ""}
-                                invalid={
-                                  validation.touched.employee && validation.errors.employee ? true : false
-                                }
-                              />
-                              {validation.touched.employee && validation.errors.employee ? (
-                                <FormFeedback type="invalid">{validation.errors.employee}</FormFeedback>
-                              ) : null}
+                                <option value="1">
+                                  Approve
+                                </option>
+                                <option value="2">
+                                  Reject
+                                </option>
+                              </Input>
                             </div>
-                            </Col> 
-                        <Col lg={6}>
-                            <div>
-                              <Label
-                                htmlFor="location-field"
-                                className="form-label"
-                              >
-                                Total Subscibers
-                              </Label>
-                              <Input
-                                name="location"
-                                id="star_value-field"
-                                className="form-control"
-                                placeholder="Enter Total Subscibers"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.location || ""}
-                                invalid={
-                                  validation.touched.location && validation.errors.location ? true : false
-                                }
-                              />
-                              {validation.touched.location && validation.errors.location ? (
-                                <FormFeedback type="invalid">{validation.errors.location}</FormFeedback>
-                              ) : null}
-
-                            </div>
-                          </Col>
-                          <Col lg={4}>
-                            <div>
-                              <Label
-                                htmlFor="employee-field"
-                                className="form-label"
-                              >
-                             Total Downloads
-                              </Label>
-                              <Input
-                                name="employee"
-                                id="employee-field"
-                                className="form-control"
-                                placeholder="Enter Total Downloads"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.employee || ""}
-                                invalid={
-                                  validation.touched.employee && validation.errors.employee ? true : false
-                                }
-                              />
-                              {validation.touched.employee && validation.errors.employee ? (
-                                <FormFeedback type="invalid">{validation.errors.employee}</FormFeedback>
-                              ) : null}
-                            </div>
-                           
-                          </Col>
-                        
+                          </Col> 
+                       
                           
                         </Row>
                       </ModalBody>
@@ -742,8 +572,8 @@ Approve
                         <div className="hstack gap-2 justify-content-end bg-info-subtle">
                           <Button color="light" onClick={() => { setModal(false); }} > Close </Button>
                           
-                          {/* <Button type="submit" color="success" id="add-btn" >  {!!isEdit ? "Update" : "Add Company"} </Button> */}
-                          <Button   style={{ backgroundColor: 'purple', borderColor: 'purple' }}  type="submit" color="success" id="add-btn" >  Update</Button>
+
+                          <Button onClick={()=>{handleStatus()}}  style={{ backgroundColor: 'purple', borderColor: 'purple' }}  type="submit" color="success" id="add-btn" >  Update</Button>
                         </div>
                       </ModalFooter>
                     </Form>

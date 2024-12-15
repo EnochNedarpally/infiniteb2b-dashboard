@@ -54,7 +54,7 @@ const AllWhitepapers = () => {
 
 
   const handleAddWhitepapers = () => {
-    Navigate('/add-whitepapers'); 
+    Navigate('/admin/add-whitepapers'); 
   };
 
   const industrytype = [
@@ -100,17 +100,20 @@ const AllWhitepapers = () => {
     
   },[])
   const fetchCategories=async()=>{
-    const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    // const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJwYW5rYWouZ2F3YWRlQG9kdGVhbXMuY29tIiwiaWF0IjoxNzMzNzQ2ODQ3LCJleHAiOjE3MzQxMDY4NDd9.MBpTG72hX7royGyihiWwE_zsYoIZWfa4ZrXpprtBnmrpW20SHvBnW5mYZ42Xj1HCEMnGifCOHpKQQlpVzFk7ew"
+    const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
     const config = {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+      headers: {  
+        'Authorization': `Bearer ${token}`,
+      },
     };
     // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
-    const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allwhitepapers",config)
-    // console.log("data", data)
-    setCategories(data.data)
+    try {
+      const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allwhitepapers?value=2",config)
+      setCategories(data.data)
+    } catch (error) {
+      console.log("Whitepaper error",error)
+    }
+   
     
   }
   // console.log("category",categories)
@@ -448,7 +451,7 @@ const AllWhitepapers = () => {
                         data={(categories ?? [])}
                         isGlobalFilter={true}
                         isAddUserList={false}
-                        customPageSize={8}
+                        customPageSize={10}
                         className="custom-header-css"
                         divClass="table-responsive table-card mb-2"
                         tableClass="align-middle table-nowrap"

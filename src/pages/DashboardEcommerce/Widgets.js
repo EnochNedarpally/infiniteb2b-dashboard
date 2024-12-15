@@ -43,7 +43,7 @@ const Widgets = () => {
         '/admin/all-whitepapers',
         '/admin/all-category',
         
-        'admin/all-user',
+        '/admin/user-allUsers',
         '/admin/all-vendors',
     ];
 

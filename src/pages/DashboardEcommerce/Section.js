@@ -3,6 +3,7 @@ import { Col, Row } from 'reactstrap';
 import Flatpickr from "react-flatpickr";
 
 const Section = (props) => {
+const authUserData = JSON.parse(sessionStorage.getItem("authUser"));
     return (
         <React.Fragment>
        
@@ -10,12 +11,12 @@ const Section = (props) => {
                 <Col xs={12}>
                     <div className="d-flex align-items-lg-center flex-lg-row flex-column">
                         <div className="flex-grow-1">
-                            <h4 className="fs-16 mb-1">Hello!</h4>
-                            <p className="text-muted mb-0">today's Update.</p>
+                            <h4 className="fs-16 mb-1">Hello!  {authUserData?.data?.first_name || authUserData?.data?.name || ""}</h4>
+                            
                         </div>
                         <div className="mt-3 mt-lg-0">
                             <form action="#">
-                                <Row className="g-3 mb-0 align-items-center">
+                                {/* <Row className="g-3 mb-0 align-items-center">
                                     <div className="col-sm-auto">
                                         <div className="input-group">
                                             <Flatpickr
@@ -34,8 +35,8 @@ const Section = (props) => {
                                     </div> */}
                                     {/* <div className="col-auto">
                                         <button type="button" className="btn btn-soft-success btn-success waves-effect waves-light layout-rightside-btn" onClick={props.rightClickBtn} ><i className="ri-pulse-line"></i></button>
-                                    </div> */}
-                                </Row>
+                                    </div> 
+                                </Row> */}
                             </form>
                         </div>
                     </div>

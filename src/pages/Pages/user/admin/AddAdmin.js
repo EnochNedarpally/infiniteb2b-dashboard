@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader, Label } from 'reactstrap';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 const AddAdmin = () => {
   const [name, setName] = useState('');
@@ -12,7 +13,20 @@ const AddAdmin = () => {
   const [success, setSuccess] = useState(false);
   const [pass, setPass] = useState("");
 
+ 
+  const adminData = useLocation()?.state
+
   const token = 'your_jwt_token_here'; // Replace with your token
+
+  useEffect(() => {
+    if (adminData) {
+      setName(adminData.name)
+      setEmail(adminData.email)
+      setLocation(adminData.Location)
+      setPhoneNumber(adminData.name)
+      setPass(adminData.pass)
+    }
+  }, [])
 
   const handleSubmit = async (event) => {
     event.preventDefault();

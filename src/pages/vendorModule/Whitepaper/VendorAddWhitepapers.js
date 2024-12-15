@@ -5,6 +5,8 @@ import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import axios from 'axios';
 import Sidebar from '../Sidebar';
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 
 const VendorAddWhitepaper = () => {
   const [file, setFile] = useState(null);
@@ -22,21 +24,11 @@ const VendorAddWhitepaper = () => {
   const [isFocused, setIsFocused] = useState(false)
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJzdWZpeWFuLmluYW1kYXJAZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMTY3MjE2OSwiZXhwIjoxNzMyMDMyMTY5fQ.O4c9G3wpkepnQkM8AbUbdeKRdGpxI6-qmUUBk19Pmz2PilIKu-vjyD6LS1un-B36UWFEnkonANJOOdvSAK23_A'
+  const navigate = useNavigate()
   const config = {
 
     headers: {
       'Authorization': `Bearer ${token}`
-    }
-  };
-  useEffect(() => {
-    fetchRandomRecords();
-  }, []);
-  const fetchRandomRecords = async () => {
-    try {
-      const response = await axios.get('https://infiniteb2b.com:8443/api/category');
-      setOptions(response.data.data.slice(0, 10).map(item => item.name))
-    } catch (error) {
-      console.error('Error fetching random records:', error);
     }
   };
   useEffect(() => {
@@ -103,8 +95,7 @@ const VendorAddWhitepaper = () => {
     setSuccess(true);
 
     try {
-      // const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-      const token = 'eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJwYW5rYWouZ2F3YWRlQG9kdGVhbXMuY29tIiwiaWF0IjoxNzMzMDYyNzIwLCJleHAiOjE3MzM0MjI3MjB9.nQqJzQUW4W57Axcm60aOugWdgX5TTePuPm8uX9SyypPnj1-MCSmbbmEZ9ybBd6IB4Te99NLV7w1HR-mVwhh_6g';
+      const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.post(
         'https://infiniteb2b.com:8443/api/vendor/add-solutionset',
         formData,
@@ -115,7 +106,7 @@ const VendorAddWhitepaper = () => {
           },
         }
       );
-      if (response.status === 200) {
+      if (response.message =="SUCCESS") {
         setSuccess(true);
         setFile(null);
         setCategory('');
@@ -123,10 +114,12 @@ const VendorAddWhitepaper = () => {
         setTitle('');
         setImage(null);
 
+        navigate("/vendor/all-whitepapers")
 
       }
     } catch (err) {
       // setError(err?.response?.data?.message ?? 'Error uploading file');
+      toast.error('Error uploading file')
       setError(err?.response?.data?.message ?? 'Error uploading file');
       console.log(err, "err")
     } finally {
@@ -140,6 +133,7 @@ const VendorAddWhitepaper = () => {
       <div className="page-content">
         <Container fluid>
           {/* <BreadCrumb title="File Upload" pageTitle="Forms" /> */}
+          <ToastContainer closeButton={false} limit={1} />
           <Row>
             <Col lg={12}>
               <Card>
@@ -301,7 +295,6 @@ const VendorAddWhitepaper = () => {
                     </button>
                   </form>
 
-                  {success && <p className="text-success mt-3">File uploaded successfully!</p>}
                   {/* {error && <p className="text-danger mt-3">{error}</p>} */}
                 </CardBody>
               </Card>

@@ -7,7 +7,7 @@ import {
   postSocialLogin,
 } from "../../../helpers/fakebackend_helper";
 
-import { loginSuccess, logoutUserSuccess, apiError, reset_login_flag } from './reducer';
+import { loginSuccess, logoutUserSuccess, apiError, reset_login_flag, getUserRole } from './reducer';
 
 // const fireBaseBackend = getFirebaseBackend();
 
@@ -50,6 +50,7 @@ export const loginUser = (user, history) => async (dispatch) => {
         data = finallogin.data;
         if (finallogin.message === "success") {
           dispatch(loginSuccess(data));
+          dispatch(getUserRole(data.role))
           history('/dashboard')
         } else {
           dispatch(apiError(finallogin));
@@ -66,7 +67,7 @@ export const loginUser = (user, history) => async (dispatch) => {
 
 export const logoutUser = () => async (dispatch) => {
   try {
-    sessionStorage.removeItem("authUser");
+    sessionStorage.clear();
     let fireBaseBackend = getFirebaseBackend();
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       const response = fireBaseBackend.logout;

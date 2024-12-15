@@ -20,10 +20,11 @@ import LightDark from '../Components/Common/LightDark';
 import { changeSidebarVisibility } from '../slices/thunks';
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from 'reselect';
+import { useProfile } from '../Components/Hooks/UserHooks';
 
 const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
     const dispatch = useDispatch();
-
+    const { userProfile} = useProfile();
     const selectDashboardData = createSelector(
         (state) => state.Layout,
         (sidebarVisibilitytype) => sidebarVisibilitytype.sidebarVisibilitytype
@@ -149,7 +150,7 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                             />
 
                             {/* NotificationDropdown */}
-                            <NotificationDropdown />
+                            {userProfile?.data?.role !== "SUPERADMIN" && <NotificationDropdown />}
 
                             {/* ProfileDropdown */}
                             <ProfileDropdown />

@@ -239,6 +239,19 @@ const Navdata = () => {
                         { id: 2, label: "Add Editor", link: "/admin/user-addeditors" },
                     ]
                 },
+                {
+                    id: "alluser",
+                    label: "All Users",
+
+                    link: "/admin/user-allUsers",
+                    click: function (e) {
+                        e.preventDefault();
+                        setIsProfile(!isProfile);
+                    },
+                    parentId: "authentication",
+                    stateVariables: isProfile,
+
+                }
              
             ],
         },

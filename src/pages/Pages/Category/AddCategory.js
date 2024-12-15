@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const AddCategory = () => {
   const [file, setFile] = useState(null);
@@ -14,6 +16,7 @@ const AddCategory = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
+  const navigate = useNavigate()
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJDQU1QQUlHTk1BTkFHRVIiXSwic3ViIjoiY2FtcGFpZ25tYW5hZ2VyQGRlbWFuZGF5LmluZm8iLCJpYXQiOjE3MzI2OTY4NzgsImV4cCI6MTczMzA1Njg3OH0.PVZcsHqm8XiZzkMejYThVcHko1YEIdA26rNyuNFXDbCLuHKqPw2Q1mRH-OyWHOc5b4Ye9GXy6YXcIDPfbbXGTQ'; 
   // const config = {
   //   headers: {
@@ -86,18 +89,21 @@ const AddCategory = () => {
           },
         }
       );
-      if (response.status === 200) {
-        setSuccess(true);
+      if (response.message == "Success") {
+        
         setFile(null);
         setCategory('');
         setDesc('');
         setTitle('');
-        setImage(null);
-
+        setBannerImage(null)
+        setFeaturedImage(null)
+        setFeaturedImagePreview(null)
+        navigate("/admin/all-category")
+        toast.success("Category Added")
 
       }
     } catch (err) {
-      setError(err?.response?.data?.message ?? 'Error uploading file');
+      toast.error(err?.response?.data?.message ?? 'Error uploading file')
       setError(err?.response?.data?.message ?? 'Error uploading file');
       console.log(err, "err")
     } finally {
@@ -155,6 +161,7 @@ const AddCategory = () => {
     <React.Fragment>
       <div className="page-content m-0">
         <Container fluid>
+          <ToastContainer closeButton={false} limit={1} />
           <Row>
             <Col lg={12}>
               <Card>
@@ -251,9 +258,6 @@ const AddCategory = () => {
                       {loading ? 'Uploading...' : 'Submit'}
                     </button>
                   </form>
-
-                  {success && <p className="text-success mt-3">File uploaded successfully!</p>}
-                  {error && <p className="text-danger mt-3">{error}</p>}
                 </CardBody>
               </Card>
             </Col>

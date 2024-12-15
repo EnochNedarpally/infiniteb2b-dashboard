@@ -47,7 +47,7 @@ const AllEditors = () => {
 
 
   const handleAddCategory = () => {
-    Navigate('/user-addeditors');
+    Navigate('/admin/user-addeditors');
   };
   const [isEdit, setIsEdit] = useState(false);
   const [company, setCompany] = useState([]);
@@ -350,7 +350,7 @@ const AllEditors = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "Companies | Velzon - React Admin & Dashboard Template";
+  document.title = "InfiniteB2B";
   return (
     <React.Fragment>
      <div className="page-content">
@@ -416,7 +416,7 @@ const AllEditors = () => {
                         data={(categories ?? [])}
                         isGlobalFilter={true}
                         isAddUserList={false}
-                        customPageSize={8}
+                        customPageSize={10}
                         className="custom-header-css"
                         divClass="table-responsive table-card mb-2"
                         tableClass="align-middle table-nowrap"
