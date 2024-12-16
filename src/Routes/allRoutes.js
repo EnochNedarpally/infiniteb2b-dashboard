@@ -288,6 +288,7 @@ import VendorAllWhitepapers from "../pages/vendorModule/Whitepaper/vendorAllWhit
 import GetUserToken from "../pages/userModule/GetUserToken";
 import AllUser from "../pages/Pages/user/admin/AllUser";
 import { useProfile } from "../Components/Hooks/UserHooks";
+import ReviewWhitepaper from "../pages/Pages/Whitepaper/ReviewWhitepaper";
 
 
 
@@ -312,6 +313,7 @@ const authProtectedRoutes = [
  
   { path: "/admin/add-whitepapers", component: <AddWhitepaper /> }, 
   { path: "/admin/all-whitepapers", component: <AllWhitepapers /> }, 
+  { path: "/admin/review-whitepapers", component: <ReviewWhitepaper /> }, 
 
 
 
@@ -422,7 +424,7 @@ const publicRoutes = [
   // Authentication Page
   { path: "/logout", component: <Logout /> },
   { path: "/admin/login", component: <Login /> },
-  // { path: "/user/login", component: <GetUserToken /> },
+  { path: "/user/login", component: <Login /> },
   //vendor login
 { path: "/vendor/login", component: <VendorLogin /> }, 
   // { path: "/dashboard", component: <DashboardEcommerce /> },

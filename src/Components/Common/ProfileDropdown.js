@@ -9,7 +9,7 @@ import {
 } from "reactstrap";
 
 //import images
-import avatar1 from "../../assets/images/atul.jpeg";
+import avatar1 from "../../assets/images/personIcon.png";
 import { createSelector } from "reselect";
 
 const ProfileDropdown = () => {

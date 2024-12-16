@@ -17,6 +17,7 @@ const Navdata = () => {
     const [isIcons, setIsIcons] = useState(false);
     const [isMaps, setIsMaps] = useState(false);
     const [isMultiLevel, setIsMultiLevel] = useState(false);
+    const [isSetting, setIsSetting] = useState(false);
 
     //Calender
     const [isCalender, setCalender] = useState(false);
@@ -118,6 +119,9 @@ const Navdata = () => {
         }
         if (iscurrentState !== 'Charts') {
             setIsCharts(false);
+        }
+        if (iscurrentState !== 'Setting') {
+            setIsSetting(false);
         }
         if (iscurrentState !== 'Icons') {
             setIsIcons(false);
@@ -381,6 +385,19 @@ const Navdata = () => {
                
                 },
                 { id: "team", label: "Add Whitepapers", link: "/admin/add-whitepapers", parentId: "pages" },
+                {
+                    id: "profile",
+                    label: "Review Whitepaper",
+                    link: "/admin/review-whitepapers",
+                    // isChildItem: true,
+                    click: function (e) {
+                        e.preventDefault();
+                        setIsProfile(!isProfile);
+                    },
+                    parentId: "pages",
+                    stateVariables: isProfile,
+               
+                },
                 
             ],
         },
@@ -550,11 +567,11 @@ const Navdata = () => {
             link: "/#",
             click: function (e) {
                 e.preventDefault();
-                setIsCharts(!isCharts);
-                setIscurrentState('Charts');
+                setIsSetting(!isSetting);
+                setIscurrentState('Setting');
                 updateIconSidebar(e);
             },
-            stateVariables: isCharts,
+            stateVariables: isSetting,
             subItems: [
                 {
                     id: "Site setting",
@@ -569,12 +586,12 @@ const Navdata = () => {
                    
                
                 },
-                { id: "Home", label: "Home", link: "/charts-chartjs", parentId: "charts" },
+                { id: "Home", label: "Home", link: "/charts-chartjs", parentId: "Setting" },
                 
-                     { id: "PrivecyPolicy", label: "Privacy Policy", link: "/pages-privacy-policy", parentId: "pages" },
-                { id: "TermsCondition", label: "Terms Condition", link: "/pages-terms-condition", parentId: "pages" },
-                { id: "GDPR comlainces", label: "GDPR comlainces", link: "/pages-terms-condition", parentId: "pages" },
-                { id: "edit profile", label: "Edit profile", link: "/pages-terms-condition", parentId: "pages" },
+                     { id: "PrivecyPolicy", label: "Privacy Policy", link: "/", parentId: "Setting" },
+                { id: "TermsCondition", label: "Terms Condition", link: "/", parentId: "Setting" },
+                { id: "GDPR comlainces", label: "GDPR comlainces", link: "/", parentId: "Setting" },
+                { id: "edit profile", label: "Edit profile", link: "/", parentId: "Setting" },
 
             ],
         },

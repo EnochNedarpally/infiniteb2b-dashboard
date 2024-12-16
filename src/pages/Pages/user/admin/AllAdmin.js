@@ -61,7 +61,7 @@ const AllAdmin = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
   const [modal, setModal] = useState(false);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("1");
   const [adminId, setAdminId] = useState("")
 
   const industrytype = [
@@ -391,7 +391,7 @@ const AllAdmin = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-const handleStatus = async()=>{
+  const handleStatus = async()=>{
   const formData = new FormData();
     formData.append('id', adminId);        // Append ID
     formData.append('status', status); 
@@ -402,7 +402,8 @@ const handleStatus = async()=>{
         'Authorization': `Bearer ${token}`
       }
     };
-    await axios.put("https://infiniteb2b.com:8443/admin/update/status",formData  ,config)
+    await axios.post("https://infiniteb2b.com:8443/admin/update/status",formData  ,config)
+    fetchCategories();
     setModal(false)
   } catch (error) {
     toast.error(error)
@@ -504,10 +505,10 @@ const handleStatus = async()=>{
                                 onChange={(e)=>setStatus(e.target.value)}
                               >
                                 <option value="1">
-                                  Approve
+                                  Active
                                 </option>
                                 <option value="2">
-                                  Reject
+                                  Inactive
                                 </option>
                               </Input>
                             </div>

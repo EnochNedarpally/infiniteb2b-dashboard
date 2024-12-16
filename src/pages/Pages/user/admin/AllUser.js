@@ -1,7 +1,7 @@
 
 
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 
 
 import {
@@ -10,6 +10,14 @@ import {
   Row,
   Card,
   CardBody,
+  ModalBody,
+  Label,
+  Input,
+  Modal,
+  ModalHeader,
+  Form,
+  ModalFooter,
+  Button,
 } from "reactstrap";
 
 
@@ -20,12 +28,25 @@ import axios from "axios";
 
 const AllUser = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
+  const [userId, setUserId] = useState("")
+  const [status, setStatus] = useState("1")
+  const [modal, setModal] = useState(false)
+  const [users, setUsers] = useState([]);
+  
+  const toggle = useCallback(() => {
+      if (modal) {
+        setModal(false);
+      } else {
+        setModal(true);
+      }
+    }, [modal]);
 
   useEffect(() => {
 
     fetchUsers();
 
   }, [])
+
   const fetchUsers = async () => {
     const config = {
       headers: {
@@ -37,7 +58,26 @@ const AllUser = () => {
 
   }
 
-  const [users, setUsers] = useState([]);
+  const handleStatus = async()=>{
+    const formData = new FormData();
+      formData.append('id', userId);        // Append ID
+      formData.append('value', status); 
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      await axios.post("https://infiniteb2b.com:8443/update-user-status",formData  ,config)
+      fetchUsers();
+      setModal(false)
+    } catch (error) {
+      toast.error(error)
+      console.log(error)
+    }
+  }
+
 
   // Column
   const columns = useMemo(
@@ -78,9 +118,16 @@ const AllUser = () => {
         enableColumnFilter: false,
       },
       {
-        header: "Job title",
-        accessorKey: "jobTitle",
+        header: "Status",
+        accessorKey: "status",
         enableColumnFilter: false,
+        cell: (cell) => {
+          return (
+            <div className="d-flex justify-content-center">
+             {cell.row.original.status ?? "Hold"}
+            </div>
+          );
+        },
       },
       {
         header: () => <div className="text-center">Action</div>, // Centered header
@@ -91,6 +138,8 @@ const AllUser = () => {
               <button
                 className="btn btn-primary btn-sm me-2"
                 onClick={() => {
+                  setModal(!modal)
+                  setUserId(cell.row.original.id)
                 }}
 
               >
@@ -137,6 +186,57 @@ const AllUser = () => {
                     />
 
                   </div>
+                  {<Modal id="showModal" isOpen={modal} toggle={toggle} centered fullscreen>
+                    <ModalHeader className="bg-info-subtle p-3" toggle={toggle}>
+                      {/* {!!isEdit ? "Edit Company" : "Add Company"} */}
+                      Edit Status
+                    </ModalHeader>
+                    <Form className="tablelist-form" onSubmit={(e) => {
+                      e.preventDefault();
+                      return false;
+                    }}>
+                      <ModalBody>
+                        <input type="hidden" id="id-field" />
+                        <Row className="g-3">
+
+
+                          <Col lg={6}>
+                            <div>
+                              <Label
+                                htmlFor="owner-field"
+                                className="form-label"
+                              >
+                              Status
+                              </Label>
+                              <Input
+                                bsSize="lg"
+                                className="mb-3"
+                                type="select"
+                                onChange={(e)=>setStatus(e.target.value)}
+                              >
+                                <option value="1">
+                                  Active
+                                </option>
+                                <option value="2">
+                                  Inactive
+                                </option>
+                              </Input>
+                            </div>
+                          </Col> 
+                       
+                          
+                        </Row>
+                      </ModalBody>
+                      <ModalFooter>
+                        <div className="hstack gap-2 justify-content-end bg-info-subtle">
+                          <Button color="light" onClick={() => { setModal(false); }} > Close </Button>
+                          
+
+                          <Button onClick={()=>{handleStatus()}}  style={{ backgroundColor: 'purple', borderColor: 'purple' }}  type="submit" color="success" id="add-btn" >  Update</Button>
+                        </div>
+                      </ModalFooter>
+                    </Form>
+                  </Modal>}
                   <ToastContainer closeButton={false} limit={1} />
                 </CardBody>
               </Card>

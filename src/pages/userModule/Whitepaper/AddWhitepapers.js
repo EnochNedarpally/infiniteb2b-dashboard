@@ -17,7 +17,7 @@ const VendorAddWhitepaper = () => {
   const [selectedOptions, setSelectedOptions] = useState("");
 
   const [query, setQuery] = useState('');
-  const [options, setOptions] = useState(["Name", "Service", "ABM (Account Based Marketing)", "Accounting & Tax Advisory Firms", "Accounting Software", "Bicycle Industry", "Big Data", "Billing Software", "Credit Unions", "CRM (Customer Relationship Management)"]);
+  const [options, setOptions] = useState(["Airlines", "SOCIAL-MEDIA-STRATEGY-GUIDE", "Big Data", "Machine-learning", "2023-INDUSTRY-TRENDS-REPORT", "SEO-Keyword-Research", "B2B-Lead-Generation-Campaign-Guide", "Authentic-Gaming", "From-B2B-to-D2C-online-sales.", "CRM (Customer Relationship Management)"]); 
   const [isFocused, setIsFocused] = useState(false)
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJzdWZpeWFuLmluYW1kYXJAZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMTY3MjE2OSwiZXhwIjoxNzMyMDMyMTY5fQ.O4c9G3wpkepnQkM8AbUbdeKRdGpxI6-qmUUBk19Pmz2PilIKu-vjyD6LS1un-B36UWFEnkonANJOOdvSAK23_A'

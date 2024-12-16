@@ -310,8 +310,8 @@ const AllCategory = () => {
             <ul className="list-inline hstack gap-2 mb-0">
            
               <li className="list-inline-item" title="View">
-                <Link to="/view-category" 
-                  onClick={() => { const companyData = cell.row.original; setInfo(companyData); }}
+                <Link to="/admin/all-category" 
+                  onClick={() => { window.open(cell.row.original.url ?? "https://infiniteb2b.com/category", '_blank'); }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>

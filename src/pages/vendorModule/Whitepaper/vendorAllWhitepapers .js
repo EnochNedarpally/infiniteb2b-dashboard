@@ -111,7 +111,7 @@ const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessio
       }
     };
     // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
-    const data = await axios.get(`https://infiniteb2b.com:8443/api/vendor/get-allwhitepapers?status=${queryParams}`,config)
+    const data = await axios.get(`https://infiniteb2b.com:8443/api/vendor/get-allwhitepapers?status=${queryParams ?? ""}`,config)
     // console.log("data", data)
     setCategories(data.data)
     

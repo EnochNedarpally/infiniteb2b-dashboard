@@ -461,10 +461,10 @@ const AllVendors = () => {
                                 onChange={(e)=>setStatus(e.target.value)}
                               >
                                 <option value="1">
-                                  Approve
+                                  Active
                                 </option>
                                 <option value="2">
-                                  Reject
+                                  Inactive
                                 </option>
                               </Input>
                             </div>

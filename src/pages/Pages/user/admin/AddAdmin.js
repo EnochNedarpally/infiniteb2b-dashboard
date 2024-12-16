@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader, Label } from 'reactstrap';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 
 const AddAdmin = () => {
   const [name, setName] = useState('');
@@ -13,7 +14,7 @@ const AddAdmin = () => {
   const [success, setSuccess] = useState(false);
   const [pass, setPass] = useState("");
 
- 
+  const navigate = useNavigate()
   const adminData = useLocation()?.state
 
   const token = 'your_jwt_token_here'; // Replace with your token
@@ -61,15 +62,16 @@ const AddAdmin = () => {
         }
       );
 console.log("formData", formData)
-      if (response.status === 200) {
-        setSuccess(true);
+      if (response.message.toLowerCase() == "success") {
         setName('');
         setPhoneNumber('');
         setEmail('');
         setLocation('');
         setPass('');
+        navigate("/admin/user-alladmin")
       }
     } catch (err) {
+      toast.error(err?.response?.data?.message ?? 'Error submitting form')
       setError(err?.response?.data?.message ?? 'Error submitting form');
       console.error(err);
     } finally {
@@ -83,6 +85,7 @@ console.log("formData", formData)
         <Container fluid>
           <Row>
             <Col lg={12}>
+             <ToastContainer closeButton={false} limit={1} />
               <Card>
                 <CardHeader className="card-header m-0">
                   <h4 className="card-title mb-0">Add Admin</h4>
@@ -177,8 +180,6 @@ console.log("formData", formData)
                     </button>
                   </form>
 
-                  {success && <p className="text-success mt-3">Admin added successfully!</p>}
-                  {error && <p className="text-danger mt-3">{error}</p>}
                 </CardBody>
               </Card>
             </Col>
