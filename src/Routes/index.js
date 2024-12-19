@@ -6,9 +6,8 @@ import NonAuthLayout from "../Layouts/NonAuthLayout";
 import VerticalLayout from "../Layouts/index";
 
 //routes
-import { authProtectedRoutes, publicRoutes, vendorProtectedRoutes } from "./allRoutes";
+import { authProtectedRoutes, publicRoutes, userProtectedRoutes, vendorProtectedRoutes } from "./allRoutes";
 import { AuthProtected } from './AuthProtected';
-import { useProfile } from '../Components/Hooks/UserHooks';
 
 const Index = () => {
 const authUserData = JSON.parse(sessionStorage.getItem("authUser"));
@@ -17,7 +16,7 @@ const navigate = useNavigate()
 
 
 useEffect(()=>{
-    if(authUserData?.data?.role){
+    if(authUserData){
     const routeData = getURL(authUserData.data.role)
     setPrivateRoutes(routeData)
     }
@@ -28,8 +27,7 @@ const getURL = (role)=>{
         // navigate("/vendor/login")
         return vendorProtectedRoutes
     } 
-    if(role == "user ") return authProtectedRoutes
-    else return []
+    else return userProtectedRoutes
   }
     return (
         <React.Fragment>

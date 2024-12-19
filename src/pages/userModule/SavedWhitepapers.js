@@ -42,6 +42,7 @@ import DeleteModal from "../../Components/Common/DeleteModal";
 import axios from "axios";
 
 const SavedWhitepapers = () => {
+  const token = JSON.parse(sessionStorage.getItem("authUser")).data.jwtToken ?? null;
 
  const Navigate = useNavigate()
   const [isEdit, setIsEdit] = useState(false);
@@ -51,30 +52,6 @@ const SavedWhitepapers = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
   const [modal, setModal] = useState(false);
-
-
-  const handleAddWhitepapers = () => {
-    Navigate('/add-whitepapers'); 
-  };
-
-  const industrytype = [
-    {
-      options: [
-        { label: "Select industry type", value: "Select industry type" },
-        { label: "Computer Industry", value: "Computer Industryfdgfdgfd" },
-        { label: "Chemical Industries", value: "Chemical Industries" },
-        { label: "Health Services", value: "Health Services" },
-        {
-          label: "Telecommunications Services",
-          value: "Telecommunications Services",
-        },
-        {
-          label: "Textiles: Clothing, Footwear",
-          value: "Textiles: Clothing, Footwear",
-        },
-      ],
-    },
-  ];
 
   const toggle = useCallback(() => {
     if (modal) {
@@ -96,25 +73,19 @@ const SavedWhitepapers = () => {
 
   useEffect(()=>{
     
-    fetchCategories()
+    fetchWhitepapers()
     
   },[])
-  const fetchCategories=async()=>{
-    // const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJjb2RlYmFja3Vwc3VmaXlhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzMxMzc2NTEsImV4cCI6MTczMzQ5NzY1MX0.zDhKn6CLeBPDeqriyGDthpg0e2lCw_c4PMskwwJhcASN6e3TVO1r3eXJvwCX8FEs98Guz8osB-MnXlQ6thgXsQ"
+  const fetchWhitepapers=async()=>{
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     };
-    // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
     const data = await axios.get("https://infiniteb2b.com:8443/api/user/allwhitepapers-saved",config)
-    // console.log("data", data)
-    // console.log("data.data.id", data.data.id)
     setCategories(data.data)
     
   }
-  // console.log("category",categories)
 
 
   // validation
@@ -288,8 +259,6 @@ const SavedWhitepapers = () => {
         header: "Action",
         cell: ({ row }) => {
           const handleUnsaved = async (id) => {
-            const token = "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJjb2RlYmFja3Vwc3VmaXlhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzMxMzc2NTEsImV4cCI6MTczMzQ5NzY1MX0.zDhKn6CLeBPDeqriyGDthpg0e2lCw_c4PMskwwJhcASN6e3TVO1r3eXJvwCX8FEs98Guz8osB-MnXlQ6thgXsQ";
-      
             const config = {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -307,7 +276,8 @@ const SavedWhitepapers = () => {
                 config
               );
       
-              alert(response.data.message);
+              toast(response?.message ?? "Whitepapers unsaved");
+              fetchWhitepapers()
             } catch (error) {
               console.error(
                 "Error while unsaving whitepaper:",

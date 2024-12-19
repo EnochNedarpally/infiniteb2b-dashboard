@@ -41,8 +41,8 @@ import Loader from "../../../Components/Common/Loader";
 import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
 
-const VendorAllWhitepapers = () => {
-
+const UserAllWhitepapers = () => {
+  const token = JSON.parse(sessionStorage.getItem("authUser")).data.jwtToken ?? null;
  const Navigate = useNavigate()
   const [isEdit, setIsEdit] = useState(false);
   const [company, setCompany] = useState([]);
@@ -100,8 +100,6 @@ const VendorAllWhitepapers = () => {
     
   },[])
   const fetchCategories=async()=>{
-    const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    // const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJTVVBFUkFETUlOIl0sInN1YiI6InN1cGVyYWRtaW5AZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMjg3MDQzMywiZXhwIjoxNzMzMjMwNDMzfQ.ne7d9Mseaabh-uNJEx7GOaa1Vd7G8JTLF8M45ZkDGKNm5N9u6IMSMMHvz5EdhYEJxljd1qCFjoXtUM42rlHmGQ"
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -623,7 +621,7 @@ const VendorAllWhitepapers = () => {
   );
 };
 
-export default VendorAllWhitepapers;
+export default UserAllWhitepapers;
 
 
 // import React, { useEffect, useState, useCallback, useMemo } from "react";

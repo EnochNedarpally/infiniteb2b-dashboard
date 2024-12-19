@@ -12,7 +12,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/login/admin', // API Endpoint
+        'https://infiniteb2b.com:8443/api/user/login', // API Endpoint
         {
           email, // Payload: Ensure this matches what the API expects
           password,

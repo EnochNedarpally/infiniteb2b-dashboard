@@ -1,11 +1,12 @@
+const isUser = window.location.pathname.includes("user")
 //REGISTER
 // export const POST_FAKE_REGISTER = "/auth/signup";
 export const POST_FAKE_REGISTER = "/register/admin"; 
 
 //LOGIN
 // export const POST_FAKE_LOGIN = "/auth/signin";
-export const POST_FAKE_LOGIN = "/login/admin";
-export const LOGIN = "/login/admin";  // https://infiniteb2b.com:8443/login/admin
+export const POST_FAKE_LOGIN =isUser ? "/api/user/login" : "/login/admin";
+export const LOGIN = isUser ? "/api/user/login" : "/login/admin";  // https://infiniteb2b.com:8443/login/admin
 export const POST_FAKE_JWT_LOGIN = "/post-jwt-login";
 export const POST_FAKE_PASSWORD_FORGET = "/auth/forgot-password";
 export const POST_FAKE_JWT_PASSWORD_FORGET = "/jwt-forget-pwd";

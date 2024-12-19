@@ -28,7 +28,7 @@ const Logout = (props) => {
   const getURL = (role) => {
     if (role == "SUPERADMIN ") return "/admin/login"
     if (role == "vendor") return "/vendor/login"
-    if (role == "user ") return "/user/login"
+    else return "/user/login"
   }
 
   useEffect(() => {

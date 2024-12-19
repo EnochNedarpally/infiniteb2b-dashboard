@@ -289,6 +289,9 @@ import GetUserToken from "../pages/userModule/GetUserToken";
 import AllUser from "../pages/Pages/user/admin/AllUser";
 import { useProfile } from "../Components/Hooks/UserHooks";
 import ReviewWhitepaper from "../pages/Pages/Whitepaper/ReviewWhitepaper";
+import UserAllWhitepapers from "../pages/userModule/Whitepaper/AllWhitepapers ";
+import DownloadedWhitepapers from "../pages/userModule/DownloadedWhitepapers";
+import ViewedWhitepapers from "../pages/userModule/ViewedWhitepaper";
 
 
 
@@ -385,7 +388,6 @@ const authProtectedRoutes = [
   { path: "/", component: <AdminDashboard /> },
 //**************************************************************** */
 //user module
-{ path: "/user/dashboard", component: <UserDashboard /> }, 
 { path: "/user/saved-whitepapers", component: <SavedWhitepapers /> }, 
 { path: "/user/news-letter", component: <NewsletterSubsciber /> }, 
 { path: "/user/category-subsciber", component: <CategorySubsciber /> }, 
@@ -420,6 +422,32 @@ const vendorProtectedRoutes = [
   { path: "/vendor/profile", component: <VendorProfile /> },
 ];
 
+const userProtectedRoutes = [
+  { path: "/profile", component: <UserProfile /> },
+  {
+    path: "/admin/login",
+    exact: true,
+    component: <Navigate to="/user/login" />,
+  },
+  {
+    path: "/vendor/login",
+    exact: true,
+    component: <Navigate to="/user/login" />,
+  },
+  { path: "*", component: <Navigate to="/user/dashboard" /> },
+  { path: "/", exact: true, component: <UserDashboard /> },
+  { path: "/user/dashboard", component: <UserDashboard /> },
+
+  { path: "/user/dashboard", component: <UserDashboard /> }, 
+{ path: "/user/saved-whitepapers", component: <SavedWhitepapers /> }, 
+{ path: "/user/downloaded-whitepapers", component: <DownloadedWhitepapers /> }, 
+{ path: "/user/viewed-whitepapers", component: <ViewedWhitepapers/> }, 
+{ path: "/user/news-letter", component: <NewsletterSubsciber /> }, 
+{ path: "/user/category-subsciber", component: <CategorySubsciber /> }, 
+{ path: "/user/profile", component: <UserProfile /> }, 
+{ path: "/user/all-whitepapers", component: <UserAllWhitepapers /> }, 
+];
+
 const publicRoutes = [
   // Authentication Page
   { path: "/logout", component: <Logout /> },
@@ -448,4 +476,4 @@ const publicRoutes = [
 
 ];
 
-export { authProtectedRoutes, publicRoutes, vendorProtectedRoutes };
+export { authProtectedRoutes, publicRoutes, vendorProtectedRoutes,userProtectedRoutes };

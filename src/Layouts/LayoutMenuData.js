@@ -617,27 +617,28 @@ const Navdata = () => {
         {
             id: "SavedWhitePapers",
             label: "Saved WhitePapers",
-            icon: "ri-dashboard-2-line",
+            icon: "ri-bookmark-line",
             link: "/user/saved-whitepapers",
-            stateVariables: isDashboard,
-          
-
-            
+            stateVariables: isDashboard,    
         },
         {
-            id: "CategorySubscribers",
-            label: "Subscribe Category",
-            icon: "ri-dashboard-2-line",
-            link: "/user/category-subsciber",
-            stateVariables: isDashboard,
-          
-
-            
+            id: "DownloadedWhitePapers",
+            label: "Downloaded Whitepapers",
+            icon: "ri-download-cloud-line",
+            link: "/user/downloaded-whitepapers",
+            stateVariables: isDashboard,  
+        },
+        {
+            id: "ViewedWhitePapers",
+            label: "Viewed Whitepapers",
+            icon: "ri-eye-line",
+            link: "/user/viewed-whitepapers",
+            stateVariables: isDashboard,  
         },
         {
             id: "NewsLetterSubsciber",
             label: "NewsLetter",
-            icon: "ri-dashboard-2-line",
+            icon: "ri-article-line",
             // link: "/user/newsletter-subsciber",
             link: "/user/news-letter",
             stateVariables: isDashboard,

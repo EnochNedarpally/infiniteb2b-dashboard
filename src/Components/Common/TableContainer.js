@@ -214,7 +214,7 @@ const TableContainer = ({
             {getHeaderGroups().map((headerGroup) => (
               <tr className={trClass} key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id} className={thClass}  {...{
+                  <th key={header.id} className={thClass} style={{maxWidth: "300px"}} {...{
                     onClick: header.column.getToggleSortingHandler(),
                   }}>
                     {header.isPlaceholder ? null : (
@@ -247,7 +247,7 @@ const TableContainer = ({
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <td key={cell.id}>
+                      <td key={cell.id} style={{paddingRight:"4px",whiteSpace: "nowrap",overflow:"hidden",textOverflow: "ellipsis",maxWidth: "300px",  }}>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

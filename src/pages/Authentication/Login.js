@@ -17,6 +17,7 @@ import { loginUser, socialLogin, resetLoginFlag } from "../../slices/thunks";
 
 import logoLight from "../../assets/images/Infinite-b2b-1-scaled.png";
 import { createSelector } from 'reselect';
+import { toast, ToastContainer } from 'react-toastify';
 //import images
 
 const Login = (props) => {
@@ -53,13 +54,19 @@ const Login = (props) => {
         }
     }, [user]);
 
+    useEffect(()=>{
+        if(errorMsg){
+            toast.error("Login failed. Please check your credentials.")
+        }
+    },[errorMsg])
+
     const validation = useFormik({
         // enableReinitialize : use this flag when initial values needs to be changed
         enableReinitialize: true,
 
         initialValues: {
-            email: userLogin.email || "superadmin@demanday.info" || '',
-            password: userLogin.password || "1234" || '',
+            email: userLogin.email || '',
+            password: userLogin.password || '',
         },
         validationSchema: Yup.object({
             email: Yup.string().required("Please Enter Your Email"),
@@ -69,7 +76,6 @@ const Login = (props) => {
             // console.log("values", values)
             // console.log("props.router.navigate", props.router.navigate)
             dispatch(loginUser(values, props.router.navigate));
-          
         }
     });
 
@@ -86,13 +92,14 @@ const Login = (props) => {
     };
 
 
-    useEffect(() => {
-        if (errorMsg) {
-            setTimeout(() => {
-                dispatch(resetLoginFlag());
-            }, 3000);
-        }
-    }, [dispatch, errorMsg]);
+    // useEffect(() => {
+    //     if (errorMsg) {
+    //         setTimeout(() => {
+    //             dispatch(resetLoginFlag());
+    //         }, 3000);
+    //     }
+    // }, [dispatch, errorMsg]);
+    // console.log("errorMsg",errorMsg)
 
     document.title = "InfiniteB2B";
     return (
@@ -181,14 +188,14 @@ const Login = (props) => {
                                                 </div>
 
                                                 <div className="mt-4">
-                                                    <Button color="secondary" disabled={error ? null : loading ? true : false} className="w-100" type="submit">
-                                                        {loading ? <Spinner size="sm" className='me-2'> Loading... </Spinner> : null}
+                                                    <Button color="secondary" className="w-100" type="submit">
+                                                        {/* {loading ? <Spinner size="sm" className='me-2'> Loading... </Spinner> : null} */}
                                                         Sign In
                                                     </Button>
                                                 </div>
 
                                                 <div className="mt-4 text-center">
-                                                    <div className="signin-other-title">
+                                                    {/* <div className="signin-other-title">
                                                         <h5 className="fs-13 mb-4 title">Sign In with</h5>
                                                     </div>
                                                     <div>
@@ -214,7 +221,7 @@ const Login = (props) => {
                                                         </Link>
                                                         <Button color="dark" className="btn-icon"><i className="ri-github-fill fs-16"></i></Button>{" "}
                                                         <Button color="info" className="btn-icon"><i className="ri-twitter-fill fs-16"></i></Button>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </Form>
                                         </div>
@@ -225,7 +232,7 @@ const Login = (props) => {
                                     <p className="mb-0">Don't have an account ? <Link to="/register" className="fw-semibold text-primary text-decoration-underline"> Signup </Link> </p>
                                     {/* <p className="mb-0">Don't have an account ? <Link className="fw-semibold text-primary text-decoration-underline"> Signup </Link> </p> */}
                                 </div>
-
+                                <ToastContainer closeButton={false} limit={1} />
                             </Col>
                         </Row>
                     </Container>

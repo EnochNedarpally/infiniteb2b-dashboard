@@ -5,6 +5,7 @@ import Section from "./Section";
 import TotalecomWidgets from "./TotalWidgets";
 import UserDash from "./TotalWidgets";
 import Sidebar from "../Sidebar";
+import UserWidget from "../../DashboardEcommerce/UserWidget";
 
 const UserDashboard = () => {
   document.title = "InfiniteB2B";
@@ -25,7 +26,7 @@ const UserDashboard = () => {
               {/* <Sidebar/> */}
                 {/* <Section rightClickBtn={toggleRightColumn} /> */}
                 <Row>
-                <UserDash />
+                <UserWidget/>
                 </Row>
           
  

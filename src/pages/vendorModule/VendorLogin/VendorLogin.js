@@ -22,6 +22,7 @@ import axios from "axios";
 import logoLight from "../../../assets/images/Infinite-b2b-1-scaled.png";
 import ParticlesAuth from "../../AuthenticationInner/ParticlesAuth";
 import withRouter from "../../../Components/Common/withRouter";
+import { toast, ToastContainer } from "react-toastify";
 
 const VendorLogin = (props) => {
   const [passwordShow, setPasswordShow] = useState(false);
@@ -33,8 +34,8 @@ const VendorLogin = (props) => {
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      email: "pankaj.gawade@odteams.com",
-      password: "1234",
+      email: "",
+      password: "",
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
@@ -63,7 +64,6 @@ const VendorLogin = (props) => {
             },
           }
         );
-        console.log("response", response);
         if (response?.token) {
           sessionStorage.setItem("authUser", JSON.stringify(response));
           setSuccess(true);
@@ -75,7 +75,8 @@ const VendorLogin = (props) => {
           setError("Invalid login credentials.");
         }
       } catch (error) {
-        console.error("Error Response:", error.response);
+        console.log(error);
+        toast.error(error.message ?? "Login failed. Please try again")
         setError(
           error.response?.data?.message || "Login failed. Please try again."
         );
@@ -242,6 +243,7 @@ const VendorLogin = (props) => {
                       </Form>
                     </div>
                   </CardBody>
+                    <ToastContainer closeButton={false} limit={1} />
                 </Card>
               </Col>
             </Row>

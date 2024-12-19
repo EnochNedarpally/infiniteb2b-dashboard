@@ -48,7 +48,7 @@ export const loginUser = (user, history) => async (dispatch) => {
         var finallogin = JSON.stringify(data);
         finallogin = JSON.parse(finallogin)
         data = finallogin.data;
-        if (finallogin.message === "success") {
+        if (finallogin.message == "success" || finallogin.message == "Login Successful") {
           dispatch(loginSuccess(data));
           dispatch(getUserRole(data.role))
           history('/dashboard')
