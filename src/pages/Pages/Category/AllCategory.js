@@ -11,22 +11,11 @@ import {
   Card,
   CardHeader,
   CardBody,
-  ModalBody,
-  Label,
-  Input,
   Modal,
   ModalHeader,
-  Form,
-  ModalFooter,
   Button,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  FormFeedback
 } from "reactstrap";
 
-import { isEmpty } from "lodash";
 
 // Formik
 import * as Yup from "yup";
@@ -36,11 +25,9 @@ import { useFormik } from "formik";
 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { createSelector } from "reselect";
 import TableContainer from "../../../Components/Common/TableContainer";
 
 import ExportCSVModal from "../../../Components/Common/ExportCSVModal";
-import Loader from "../../../Components/Common/Loader";
 import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
 
@@ -58,30 +45,26 @@ const AllCategory = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalMulti, setDeleteModalMulti] = useState(false);
   const [modal, setModal] = useState(false);
-
-  const industrytype = [
-    {
-      options: [
-        { label: "Select industry type", value: "Select industry type" },
-        { label: "Computer Industry", value: "Computer Industryfdgfdgfd" },
-        { label: "Chemical Industries", value: "Chemical Industries" },
-        { label: "Health Services", value: "Health Services" },
-        {
-          label: "Telecommunications Services",
-          value: "Telecommunications Services",
-        },
-        {
-          label: "Textiles: Clothing, Footwear",
-          value: "Textiles: Clothing, Footwear",
-        },
-      ],
-    },
-  ];
+  const [isModified, setIsModified] = useState(false);
+    const [category, setCategory] = useState({});
+    const [categoryData, setCategoryData] = useState({
+        name: "",
+        whitePaperCount: "",
+        id: 0,
+        iconPath: "",
+        isSubscribe: 0,
+        bannerPath: "",
+        url: "",
+        descp: ""
+    });
+    const [featuredImagePreview, setFeaturedImagePreview] = useState(null); 
+    const [loading, setLoading] = useState(false);
 
   const toggle = useCallback(() => {
     if (modal) {
       setModal(false);
       setCompany(null);
+      setCategory({})
     } else {
       setModal(true);
     }
@@ -97,14 +80,10 @@ const AllCategory = () => {
 
 
   useEffect(()=>{
-    
-    fetchCategories();
-    // console.log("cdsbvcds")
-    
+    fetchCategories(); 
   },[])
   const fetchCategories=async()=>{
     const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    // const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJjb2RlYmFja3Vwc3VmaXlhbkBnbWFpbC5jb20iLCJpYXQiOjE3MzI4NzMzMTUsImV4cCI6MTczMzIzMzMxNX0.qW4kldzuvgbTydMLyCw8LRG-rXWYxUQKtO9csGEO5OFJKDFFbX_AEp-3xk3oGHRYmFDWvUnLxT5NyXIdRFb48w"
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -114,21 +93,7 @@ const AllCategory = () => {
     setCategories(data.data)
     
   }
-  // console.log("category",categories)
 
-  const onClickDelete = (company) => {
-    setCompany(company);
-    setDeleteModal(true);
-  };
-
-  // Add Data
-  const handleCompanyClicks = () => {
-    setCompany("");
-    setIsEdit(false);
-    toggle();
-  };
-
-  // validation
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
@@ -196,13 +161,31 @@ const AllCategory = () => {
     },
   });
 
-  // Update Data
-  const handleCompanyClick = useCallback((arg) => {
-    const company = arg;
+  const handleInputChange = (e)=>{
+    const {name,value}=e
+    setCategory({...category,[name]:value})
+    setIsModified(true)
+  }
+  const handleBannerImageChange = (files) => {
+    if (files && files[0]) {
+      setCategory({...category,["banner"]:files[0]})
+      setIsModified(true)
+    }
+  };
 
+  const handleFeaturedImageChange = (files) => {
+    if (files && files[0]) {
+      setCategory({...category,["icon"]:files[0]})
+      setFeaturedImagePreview(URL.createObjectURL(files[0]))
+      setIsModified(true)
+    }
+  };
+  // Update Data
+  const handleCategoryClick = useCallback((arg) => {
+    const company = arg;
+    setCategoryData(company)
     setCompany({
       _id: company._id,
-      // img: company.img,
       name: company.name,
       owner: company.owner,
       industry_type: company.industry_type,
@@ -241,6 +224,8 @@ const AllCategory = () => {
   const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
   const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [isExportCSV, setIsExportCSV] = useState(false);
+
 
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
@@ -258,6 +243,53 @@ const AllCategory = () => {
     setSelectedCheckBoxDelete(ele);
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("id",categoryData.id)
+    Object.keys(category).map((key) => {
+      if (key) {
+        let value = category[key];
+        if (value instanceof Blob) {
+          formData.append(key, value);
+        } else {
+          value = typeof value === 'object' ? JSON.stringify(value) : value;
+          formData.append(key, value);
+        }
+      }
+    });
+
+    setLoading(true);
+  
+    try {
+      const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
+      const response = await axios.post(
+        'https://infiniteb2b.com:8443/api/category/update',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status) {
+        
+        setCategory({});
+        setFeaturedImagePreview(null)
+        setIsModified(false)
+        toast.success("Category Updated")
+        fetchCategories()
+        toggle()
+        
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message ?? 'Error uploading file')
+      console.log(err, "err")
+    } finally {
+      setLoading(false);
+    }
+  }; 
 
   // Column
   const columns = useMemo(
@@ -281,12 +313,7 @@ const AllCategory = () => {
         header: "Category Name",
         accessorKey: "name",
         enableColumnFilter: false,
-      },
-
-
-
-
-      
+      }, 
       {
         header: "No. of WhitePapers",
         accessorKey: "solutionSetCount",
@@ -318,7 +345,7 @@ const AllCategory = () => {
               </li>
               <li className="list-inline-item" title="Edit">
                 <Link className="edit-item-btn" to="#"
-                  onClick={() => { const companyData = cell.row.original; handleCompanyClick(companyData); }}
+                  onClick={() => { const companyData = cell.row.original; handleCategoryClick(companyData); }}
                 >
                   <i className="ri-pencil-fill align-bottom text-muted"></i>
                 </Link>
@@ -329,14 +356,8 @@ const AllCategory = () => {
         },
       },
     ],
-    [handleCompanyClick, checkedAll]
+    [handleCategoryClick, checkedAll]
   );
-
-  // SideBar Company Deatail
-  const [info, setInfo] = useState([]);
-
-  // Export Modal
-  const [isExportCSV, setIsExportCSV] = useState(false);
 
   document.title = "InfiniteB2B";
   return (
@@ -362,15 +383,10 @@ const AllCategory = () => {
         />
 
         <Container fluid>
-     
-
           <Row>
-         
             <Col xxl={12}>
               <Card 
-       
               >
-
                 <CardBody className="pt-0 ">
                   <div className="flex-grow-1 ">
            
@@ -384,11 +400,7 @@ const AllCategory = () => {
 >
   <i className="ri-add-fill me-1 align-bottom"></i> Add Category
 </Button>
-
 </div>
-
-
-
                       <TableContainer
                         columns={columns}
                         data={(categories ?? [])}
@@ -399,161 +411,120 @@ const AllCategory = () => {
                         divClass="table-responsive table-card mb-2"
                         tableClass="align-middle table-nowrap"
                         theadClass="table-light"
-                  
                         SearchPlaceholder='Search for WhitePapers-set Category...'
                       />
               
                   </div>
                   {<Modal id="showModal" isOpen={modal} toggle={toggle} centered fullscreen>
                     <ModalHeader className="bg-info-subtle p-3" toggle={toggle}>
-                      {/* {!!isEdit ? "Edit Company" : "Add Company"} */}
                       Update Category
                     </ModalHeader>
-                    <Form className="tablelist-form" onSubmit={(e) => {
-                      e.preventDefault();
-                      validation.handleSubmit();
-                      return false;
-                    }}>
-                      <ModalBody>
-                        <input type="hidden" id="id-field" />
-                        <Row className="g-3">
-
-
-                          <Col lg={6}>
-                            <div>
-                              <Label
-                                htmlFor="owner-field"
-                                className="form-label"
-                              >
-                              Category Name
-                              </Label>
-                              <Input
-                                name="owner"
-                                id="owner-field"
-                                className="form-control"
-                                placeholder="Enter Category Name"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.owner || ""}
-                                invalid={
-                                  validation.touched.owner && validation.errors.owner ? true : false
-                                }
-                              />
-                              {validation.touched.owner && validation.errors.owner ? (
-                                <FormFeedback type="invalid">{validation.errors.owner}</FormFeedback>
-                              ) : null}
-                            </div>
-                          </Col>
-                        
-                           <Col lg={6}>
-                           <div>
-                              <Label
-                                htmlFor="employee-field"
-                                className="form-label"
-                              >
-                         No. of WhitePapers
-                              </Label>
-                              <Input
-                                name="employee"
-                                id="employee-field"
-                                className="form-control"
-                                placeholder="Enter No. of WhitePapers"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.employee || ""}
-                                invalid={
-                                  validation.touched.employee && validation.errors.employee ? true : false
-                                }
-                              />
-                              {validation.touched.employee && validation.errors.employee ? (
-                                <FormFeedback type="invalid">{validation.errors.employee}</FormFeedback>
-                              ) : null}
-                            </div>
-                            </Col> 
-                        <Col lg={6}>
-                            <div>
-                              <Label
-                                htmlFor="location-field"
-                                className="form-label"
-                              >
-                                Total Subscibers
-                              </Label>
-                              <Input
-                                name="location"
-                                id="star_value-field"
-                                className="form-control"
-                                placeholder="Enter Total Subscibers"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.location || ""}
-                                invalid={
-                                  validation.touched.location && validation.errors.location ? true : false
-                                }
-                              />
-                              {validation.touched.location && validation.errors.location ? (
-                                <FormFeedback type="invalid">{validation.errors.location}</FormFeedback>
-                              ) : null}
-
-                            </div>
-                          </Col>
-                          <Col lg={4}>
-                            <div>
-                              <Label
-                                htmlFor="employee-field"
-                                className="form-label"
-                              >
-                             Total Downloads
-                              </Label>
-                              <Input
-                                name="employee"
-                                id="employee-field"
-                                className="form-control"
-                                placeholder="Enter Total Downloads"
-                                type="text"
-                                validate={{
-                                  required: { value: true },
-                                }}
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.employee || ""}
-                                invalid={
-                                  validation.touched.employee && validation.errors.employee ? true : false
-                                }
-                              />
-                              {validation.touched.employee && validation.errors.employee ? (
-                                <FormFeedback type="invalid">{validation.errors.employee}</FormFeedback>
-                              ) : null}
-                            </div>
-                           
-                          </Col>
-                       
-                          
-                        </Row>
-                      </ModalBody>
-                      <ModalFooter>
-                        <div className="hstack gap-2 justify-content-end bg-info-subtle">
-                          <Button color="light" onClick={() => { setModal(false); }} > Close </Button>
-                          
-
-                          <Button   style={{ backgroundColor: 'purple', borderColor: 'purple' }}  type="submit" color="success" id="add-btn" >  Update</Button>
-                        </div>
-                      </ModalFooter>
-                    </Form>
+                     <Container fluid>
+                              <ToastContainer closeButton={false} limit={1} />
+                              <Row>
+                                <Col lg={12}>
+                                  <Card>
+                                    <CardHeader className="card-header m-0">
+                                    </CardHeader>
+                                    <CardBody className='m-0'>
+                                      <form onSubmit={handleSubmit}>
+                                        <div className="mb-4">
+                                          <label htmlFor="title" className="form-label">
+                                            Category Name
+                                          </label>
+                                          <input
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            className="form-control"
+                                            value={category?.name ?? categoryData?.name}
+                                            onChange={(e) => handleInputChange(e.target)}
+                                            required
+                                          />
+                                        </div>
+                    
+                                        <div className="mb-4">
+                                          <label htmlFor="desc" className="form-label">
+                                            Category Description
+                                          </label>
+                                          <textarea
+                                            id="desc"
+                                            name="desc"
+                                            className="form-control"
+                                            value={category?.desc ?? categoryData.descp}
+                                            onChange={(e) => handleInputChange(e.target)}
+                                          
+                                          />
+                                        </div>
+                    
+                                        <div className="mb-4">
+                                          <label htmlFor="bannerImage" className="form-label">
+                                            Insert Banner Image
+                                          </label>
+                                          <input
+                                            type="file"
+                                            id="bannerImage"
+                                            accept="image/*"
+                                            className="form-control"
+                                            onChange={(e) => handleBannerImageChange(e.target.files)}
+                                         
+                                          />
+                                          <p className="text-muted mt-1">
+                                            Please upload an image having size (1280x720)
+                                          </p>
+                                          {(category?.bannerPath || categoryData.bannerPath) && (
+                                            <div className="mt-2">
+                                              <p>
+                                                <strong>Selected Banner Image:</strong> {category?.bannerPath?.name || category.bannerPath ||  categoryData.bannerPath?.name || categoryData.bannerPath}
+                                              </p>
+                                            </div>
+                                          )}
+                                        </div>
+                    
+                                        <div className="mb-4">
+                                          <label htmlFor="featuredImage" className="form-label">
+                                            Insert Featured Image
+                                          </label>
+                                          <input
+                                            type="file"
+                                            id="featuredImage"
+                                            accept="image/*"
+                                            className="form-control"
+                                            onChange={(e) => handleFeaturedImageChange(e.target.files)}
+                                          />
+                                          <p className="text-muted mt-1">
+                                            Please upload an image having size (400x500)
+                                          </p>
+                                          {(category?.iconPath || categoryData.iconPath) && (
+                                            <div className="mt-2">
+                                              <p>
+                                                <strong>Selected Featured Image:</strong> {category?.iconPath?.name || category?.iconPath || categoryData.iconPath}
+                                              </p>
+                                      {featuredImagePreview && <div className="mt-2">
+                                        <img
+                                          src={featuredImagePreview}
+                                          alt="Preview"
+                                          style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }}
+                                        />
+                                      </div>}
+                                            </div>
+                                          )}
+                                        </div>
+                    
+                                        <button
+                                          type="submit"
+                                          className="btn btn-primary"
+                                          disabled={!isModified}
+                                        >
+                                          {loading ? 'Uploading...' : 'Submit'}
+                                        </button>
+                                      </form>
+                                    </CardBody>
+                                  </Card>
+                                </Col>
+                              </Row>
+                            </Container>
                   </Modal>}
-
-
                   <ToastContainer closeButton={false} limit={1} />
                 </CardBody>
               </Card>

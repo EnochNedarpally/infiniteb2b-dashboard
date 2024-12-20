@@ -18,6 +18,7 @@ const Navdata = () => {
     const [isMaps, setIsMaps] = useState(false);
     const [isMultiLevel, setIsMultiLevel] = useState(false);
     const [isSetting, setIsSetting] = useState(false);
+    const [isVendor, setIsVendor] = useState(false);
 
     //Calender
     const [isCalender, setCalender] = useState(false);
@@ -138,6 +139,9 @@ const Navdata = () => {
         }
         if (iscurrentState !== 'Landing') {
             setIsLanding(false);
+        }
+        if (iscurrentState !== 'Vendor') {
+            setIsVendor(false);
         }
     }, [
         history,
@@ -268,12 +272,12 @@ const Navdata = () => {
             link: "/#",
             click: function (e) {
                 e.preventDefault();
-                setIsPages(!isPages);
-                setIscurrentState('Pages');
+                setIsVendor(!isVendor);
+                setIscurrentState('Vendor');
                 updateIconSidebar(e);
             },
             
-            stateVariables: isPages,
+            stateVariables: isVendor,
             subItems: [
                 
                 {
