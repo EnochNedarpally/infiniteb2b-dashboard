@@ -27,6 +27,7 @@ import TableContainer from "../../../Components/Common/TableContainer";
 import ExportCSVModal from "../../../Components/Common/ExportCSVModal";
 import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
+import { mediaBaseURL } from "../../../helpers/api_helper";
 
 const AllWhitepapers = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
@@ -124,12 +125,9 @@ const AllWhitepapers = () => {
     }
   };
   const fetchWhitepapers=async()=>{
-    
-    
-    // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
     try {
-      const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allwhitepapers?value=2",config)
-      setCategories(data.data)
+      const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allwhitepapers?value=4",config)
+      setCategories(data.data.whitepapers)
     } catch (error) {
       console.log("Whitepaper error",error)
     }
@@ -171,9 +169,9 @@ const AllWhitepapers = () => {
     event.preventDefault();
     const formData = new FormData();
     formData.append("solutionSetId",whitePaperData?.id)
-    Object.keys(category).map((key) => {
+    Object.keys(whitePaper).map((key) => {
       if (key) {
-        let value = category[key];
+        let value = whitePaper[key];
         if (value instanceof Blob) {
           formData.append(key, value);
         } else {
@@ -182,13 +180,11 @@ const AllWhitepapers = () => {
         }
       }
     });
-
-    setLoading(true);
   
     try {
       const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/category/update',
+        'https://infiniteb2b.com:8443/api/vendor/update-solutionset',
         formData,
         {
           headers: {
@@ -200,7 +196,6 @@ const AllWhitepapers = () => {
       if (response.status) {
         
         setWhitepaper({});
-        setFeaturedImagePreview(null)
         setIsModified(false)
         toast.success("Whitepaper Updated")
         fetchWhitepapers()
@@ -284,8 +279,8 @@ const AllWhitepapers = () => {
   // Update Data
   const handleWhitePaperClick = useCallback((arg) => {
     const company = arg;
-    setWhitepaperData(company)
-
+    setWhitepaperData({...arg.solutionSet,category:arg.categoryName})
+    
     setCompany({
       _id: company._id,
       // img: company.img,
@@ -299,7 +294,7 @@ const AllWhitepapers = () => {
       contact_email: company.contact_email,
       since: company.since
     });
-
+    
     setIsEdit(true);
     toggle();
   }, [toggle]);
@@ -340,6 +335,14 @@ const AllWhitepapers = () => {
     setSelectedCheckBoxDelete(ele);
   };
 
+  const formatDate= (dateString)=>{
+    const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); 
+  const day = String(date.getDate()).padStart(2, '0'); 
+  return `${year}-${month}-${day}`;
+  }
+
    const columns = useMemo(
     () => [
       {
@@ -357,35 +360,35 @@ const AllWhitepapers = () => {
       },
       {
         header: "WhitePapers Name",
-        accessorKey: "name",
+        accessorKey: "solutionSet.title",
         enableColumnFilter: false,
       },
 
       {
         header: "Category Name",
-        accessorKey: "category",
+        accessorKey: "categoryName",
         enableColumnFilter: false,
       },
       
       {
         header: "Total Views",
-        accessorKey: "views",
+        accessorKey: "totalViews",
         enableColumnFilter: false,
       },
       {
         header: "Total Downloads",
-        accessorKey: "downloads",
+        accessorKey: "totalDownloads",
         enableColumnFilter: false,
       },
  
       {
         header: "Published date",
-        accessorKey: "date",
+        accessorKey: "publishedDate",
         enableColumnFilter: false,
-        Cell: ({ cell }) => {
+        cell: ({ cell }) => {
           const rawDate = cell.getValue(); // Get the raw date value
           const formattedDate = rawDate.split("T")[0]; // Extract the date portion
-          return formattedDate;
+          return formatDate(formattedDate);
         },
       },
       
@@ -397,7 +400,7 @@ const AllWhitepapers = () => {
            
               <li className="list-inline-item" title="View">
                 <Link to="#"
-                  onClick={() => { const companyData = cell.row.original; setInfo(companyData); }}
+                  onClick={() => { window.open(cell.row.original.whitePaperUrl ?? "https://infiniteb2b.com/whitepaper", '_blank'); }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
@@ -527,7 +530,7 @@ const AllWhitepapers = () => {
                                     id="title"
                                     name="title"
                                     className="form-control"
-                                    value={whitePaper?.title ?? whitePaperData?.name}
+                                    value={whitePaper?.title ?? whitePaperData?.title}
                                     onChange={(e) => handleWhitepaperChange(e.target)}
                                   />
                                 </div>
@@ -537,7 +540,7 @@ const AllWhitepapers = () => {
                                   </label>
                                   <input
                                     type="text"
-                                    value={(whitePaper?.category ?? whitePaperData?.category )||query}
+                                    value={(whitePaper?.categoryName ?? whitePaperData?.categoryName )||query}
                                     onChange={handleInputChange}
                                     placeholder="Search a category"
                                     onFocus={() => setIsFocused(true)}
@@ -568,14 +571,9 @@ const AllWhitepapers = () => {
                                     </ul>
                                   )}
                                 </div>
-                                {category && (
-                                  <p className="text-info mt-2">
-                                    <strong>Selected Category:</strong> {category}
+                                  <p className="form-label mt-2">
+                                    <strong>Selected Category:</strong> {category ? category : whitePaperData.category}
                                   </p>
-                                )}
-
-
-
                                 <div className="mb-3">
                                   <label htmlFor="image" className="form-label">
                                     PDFPreview:
@@ -587,11 +585,10 @@ const AllWhitepapers = () => {
                                     className="form-control"
                                     onChange={(e) => handleImageChange(e.target.files)}
                                   />
-                                  {image && (
+                                  {whitePaperData?.imagePath && (
                                     <div className="mt-2">
-                                      <p>
-                                        <strong>Selected Image:</strong> {image.name}
-                                      </p>
+                                      <img src={mediaBaseURL + whitePaperData.imagePath} alt="Whitepaper preview"
+                                      style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }}/>
                                     </div>
                                   )}
                                 </div>
@@ -601,7 +598,7 @@ const AllWhitepapers = () => {
                                   className="btn btn-primary"
                                   disabled={!isModified}
                                 >
-                                  {loading ? 'Uploading...' : 'Submit'}
+                                  Submit
                                 </button>
                               </form>
                             </CardBody>

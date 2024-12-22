@@ -6,7 +6,7 @@ import ParticlesAuth from "../AuthenticationInner/ParticlesAuth";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import withRouter from "../../Components/Common/withRouter";
 // Formik validation
 import * as Yup from "yup";
@@ -22,7 +22,8 @@ import { toast, ToastContainer } from 'react-toastify';
 
 const Login = (props) => {
     const dispatch = useDispatch();
-
+    const location = useLocation();
+    const isAdmin = location.pathname.includes("admin")
     const selectLayoutState = (state) => state;
     const loginpageData = createSelector(
         selectLayoutState,
@@ -112,7 +113,7 @@ const Login = (props) => {
                                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                                     <div>
                                         <Link to="/" className="d-inline-block auth-logo">
-                                            <img src={logoLight} alt="" height="30" />
+                                            <img src={logoLight} alt="" height="50" />
                                         </Link>
                                     </div>
                                     <p className="mt-3 fs-15 fw-medium">Admin & Dashboard</p>
@@ -228,10 +229,10 @@ const Login = (props) => {
                                     </CardBody>
                                 </Card>
 
-                                <div className="mt-4 text-center">
-                                    <p className="mb-0">Don't have an account ? <Link to="/register" className="fw-semibold text-primary text-decoration-underline"> Signup </Link> </p>
+                                {!isAdmin && <div className="mt-4 text-center">
+                                    <p className="mb-0">Don't have an account ? <Link to="/register" state={"user"} className="fw-semibold text-primary text-decoration-underline"> Signup </Link> </p>
                                     {/* <p className="mb-0">Don't have an account ? <Link className="fw-semibold text-primary text-decoration-underline"> Signup </Link> </p> */}
-                                </div>
+                                </div>}
                                 <ToastContainer closeButton={false} limit={1} />
                             </Col>
                         </Row>

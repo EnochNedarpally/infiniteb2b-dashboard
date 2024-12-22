@@ -767,7 +767,6 @@ const Navdata = () => {
     ];
  const getFilteredMenuItems = () => {
   return menuItems.filter((item) => {
-    console.log("item", item)
     if (userType === "vendor") {
       // Show only vendor-related items and headers
       return item.isHeader === true

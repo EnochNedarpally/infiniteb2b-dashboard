@@ -292,6 +292,7 @@ import ReviewWhitepaper from "../pages/Pages/Whitepaper/ReviewWhitepaper";
 import UserAllWhitepapers from "../pages/userModule/Whitepaper/AllWhitepapers ";
 import DownloadedWhitepapers from "../pages/userModule/DownloadedWhitepapers";
 import ViewedWhitepapers from "../pages/userModule/ViewedWhitepaper";
+import ViewWhitepaper from "../pages/Pages/Whitepaper/ViewWhitepaper";
 
 
 
@@ -317,6 +318,7 @@ const authProtectedRoutes = [
   { path: "/admin/add-whitepapers", component: <AddWhitepaper /> }, 
   { path: "/admin/all-whitepapers", component: <AllWhitepapers /> }, 
   { path: "/admin/review-whitepapers", component: <ReviewWhitepaper /> }, 
+  { path: "/admin/view-whitepapers", component: <ViewWhitepaper /> }, 
 
 
 

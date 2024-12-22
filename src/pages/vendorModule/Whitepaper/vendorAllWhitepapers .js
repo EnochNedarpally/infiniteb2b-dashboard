@@ -312,17 +312,7 @@ const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessio
       },
       {
         header: "WhitePapers Name",
-        accessorKey: "name",
-        enableColumnFilter: false,
-      },
-
-
-
-
-      
-      {
-        header: "Category Name",
-        accessorKey: "category",
+        accessorKey: "title",
         enableColumnFilter: false,
       },
       

@@ -5,6 +5,7 @@ import { api } from "../config";
 axios.defaults.baseURL = api.API_URL;
 // content type
 axios.defaults.headers.post["Content-Type"] = "application/json";
+export const mediaBaseURL = "https://infiniteb2b.com/"
 
 // content type
 const token = JSON.parse(sessionStorage.getItem("authUser"))
@@ -119,7 +120,6 @@ class APIClient {
 }
 const getLoggedinUser = () => {
   const user = sessionStorage.getItem("authUser");
-  console.log(user, "user");
   if (!user) {
     return null;
   } else {

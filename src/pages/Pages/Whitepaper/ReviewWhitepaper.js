@@ -25,16 +25,34 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
 const ReviewWhitepaper = () => {
-
+    const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
     const navigate = useNavigate()
     const [modal, setModal] = useState(false);
     const [categories, setCategories] = useState([]);
     const [company, setCompany] = useState([]);
+    const [status, setStatus] = useState("1");
+    const [solutionId, setSolutionId] = useState("")
 
 
-    const handleStatus = () => {
-        setModal(false)
-    }
+    const handleStatus = async () => {
+        const API_ENDPOINT = status == "1" ? "approve-solutionset" : "reject-solutionset"
+        const formData = new FormData();
+        formData.append('solutionId', solutionId);
+        try {
+          const config = {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}`
+            }
+          };
+          await axios.put(`https://infiniteb2b.com:8443/admin/${API_ENDPOINT}`, formData, config)
+          fetchWhitepapers()
+          setModal(false)
+        } catch (error) {
+          toast.error(error)
+          console.log("handleStatus",error)
+        }
+      }
 
     const toggle = useCallback(() => {
         if (modal) {
@@ -45,10 +63,9 @@ const ReviewWhitepaper = () => {
     }, [modal]);
 
     useEffect(() => {
-        fetchCategories()
+        fetchWhitepapers()
     }, [])
-    const fetchCategories = async () => {
-        const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
+    const fetchWhitepapers = async () => {
         const config = {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -56,7 +73,7 @@ const ReviewWhitepaper = () => {
         };
         try {
             const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allwhitepapers?value=2", config)
-            setCategories(data.data)
+            setCategories(data.data.whitepapers)
         } catch (error) {
             console.log("Whitepaper error", error)
         }
@@ -146,7 +163,7 @@ const ReviewWhitepaper = () => {
             },
             {
                 header: "WhitePapers Name",
-                accessorKey: "name",
+                accessorKey: "solutionSet.name",
                 enableColumnFilter: false,
             },
 
@@ -156,24 +173,24 @@ const ReviewWhitepaper = () => {
 
             {
                 header: "Category Name",
-                accessorKey: "category",
+                accessorKey: "categoryName",
                 enableColumnFilter: false,
             },
 
             {
                 header: "Total Views",
-                accessorKey: "views",
+                accessorKey: "totalViews",
                 enableColumnFilter: false,
             },
             {
                 header: "Total Downloads",
-                accessorKey: "downloads",
+                accessorKey: "totalDownloads",
                 enableColumnFilter: false,
             },
 
             {
                 header: "Status",
-                accessorKey: "status",
+                accessorKey: "solutionSet.status",
                 enableColumnFilter: false,
             },
 
@@ -184,15 +201,14 @@ const ReviewWhitepaper = () => {
                         <ul className="list-inline hstack gap-2 mb-0">
 
                             <li className="list-inline-item" title="View">
-                                <Link to="#"
-                                    onClick={() => { const companyData = cell.row.original; setInfo(companyData); }}
+                                <Link to="/admin/view-whitepapers" state={cell.row.original}
                                 >
                                     <i className="ri-eye-fill align-bottom text-muted"></i>
                                 </Link>
                             </li>
                             <li className="list-inline-item" title="Edit">
                                 <Link className="edit-item-btn" to="#"
-                                    onClick={() => {setModal(true) }}
+                                    onClick={() => {setModal(true);setSolutionId(cell.row.original.solutionSet.id) }}
                                 >
                                     <i className="ri-pencil-fill align-bottom text-muted"></i>
                                 </Link>
@@ -240,6 +256,7 @@ const ReviewWhitepaper = () => {
                                             Edit Status
                                         </ModalHeader>
                                         <Form className="tablelist-form" onSubmit={(e) => {
+                                            handleStatus()
                                             e.preventDefault();
                                             return false;
                                         }}>
@@ -274,7 +291,7 @@ const ReviewWhitepaper = () => {
                                             <ModalFooter>
                                                 <div className="hstack gap-2 justify-content-end bg-info-subtle">
                                                     <Button color="light" onClick={() => { setModal(false); }} > Close </Button>
-                                                    <Button onClick={() => { handleStatus() }} style={{ backgroundColor: 'purple', borderColor: 'purple' }} type="submit" color="success" id="add-btn" >  Update</Button>
+                                                    <Button onClick={handleStatus} style={{ backgroundColor: 'purple', borderColor: 'purple' }} type="submit" color="success" id="add-btn" >  Update</Button>
                                                 </div>
                                             </ModalFooter>
                                         </Form>

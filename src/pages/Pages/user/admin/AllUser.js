@@ -97,34 +97,44 @@ const AllUser = () => {
       },
       {
         header: "Name",
-        accessorKey: "name",
+        accessorKey: "user.name",
         enableColumnFilter: false,
       },
 
       {
-        header: "Phone No.",
-        accessorKey: "phone",
+        header: "Total Download Count",
+        accessorKey: "totalDownloadCount",
         enableColumnFilter: false,
       },
 
       {
-        header: "Email Address",
-        accessorKey: "email",
+        header: "Total Save Count",
+        accessorKey: "totalSaveCount",
         enableColumnFilter: false,
       },
       {
-        header: "Country",
-        accessorKey: "country",
+        header: "Total View Count",
+        accessorKey: "totalViewCount",
+        enableColumnFilter: false,
+      },
+      {
+        header: "News Letters Subscribed",
+        accessorKey: "newsLetterSubscribed",
+        enableColumnFilter: false,
+      },
+      {
+        header: "Total Category Subscribed Count",
+        accessorKey: "totalCategorySubscribedCount",
         enableColumnFilter: false,
       },
       {
         header: "Status",
-        accessorKey: "status",
+        accessorKey: "user.status",
         enableColumnFilter: false,
         cell: (cell) => {
           return (
             <div className="d-flex justify-content-center">
-             {cell.row.original.status ?? "Hold"}
+             {cell.row.original.user.status ?? "Hold"}
             </div>
           );
         },
@@ -139,7 +149,8 @@ const AllUser = () => {
                 className="btn btn-primary btn-sm me-2"
                 onClick={() => {
                   setModal(!modal)
-                  setUserId(cell.row.original.id)
+                  setUserId(cell.row.original.user.id)
+                  setStatus(cell.row.original.user.status == "ACTIVE" ? "1" : "2")
                 }}
 
               >
@@ -212,6 +223,7 @@ const AllUser = () => {
                                 bsSize="lg"
                                 className="mb-3"
                                 type="select"
+                                value={status}
                                 onChange={(e)=>setStatus(e.target.value)}
                               >
                                 <option value="1">

@@ -50,12 +50,15 @@ const [endUrl, setendUrl] = useState("/admin/login")
   useEffect(() => {
     if(location.pathname.includes("user")) {
       setendUrl("/user/login")
+      return
     }
     if(location.pathname.includes("vendor")){
       setendUrl("/vendor/login")
+      return
     }
+    else setendUrl("/admin/login")
 
-  }, [location])
+  }, [location.pathname])
   
 
   return (
@@ -135,7 +138,7 @@ const [endUrl, setendUrl] = useState("/admin/login")
             </Link>
           </DropdownItem> */}
           <DropdownItem className="p-0">
-            <Link to={endUrl} className="dropdown-item">
+            <Link onClick={()=>{sessionStorage.removeItem("authUser")}} to={endUrl} className="dropdown-item">
               <i className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>{" "}
               <span className="align-middle" data-key="t-logout">
                 Logout

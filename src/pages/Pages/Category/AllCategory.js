@@ -516,7 +516,7 @@ const AllCategory = () => {
                                           className="btn btn-primary"
                                           disabled={!isModified}
                                         >
-                                          {loading ? 'Uploading...' : 'Submit'}
+                                          Submit
                                         </button>
                                       </form>
                                     </CardBody>
