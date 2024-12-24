@@ -17,7 +17,7 @@ import {
 const fireBaseBackend = getFirebaseBackend();
 
 // Is user register successfull then direct plot user in redux.
-export const registerUser = (user) => async (dispatch) => {
+export const registerUser = (user) => async (dispatch,callback) => {
   try {
     let response;
 
@@ -30,12 +30,8 @@ export const registerUser = (user) => async (dispatch) => {
     } else if (process.env.REACT_APP_API_URL) {
       response = postFakeRegister(user);
       const data = await response;
-
-      if (data.message === "success") {
         dispatch(registerUserSuccessful(data));
-      } else {
-        dispatch(registerUserFailed(data));
-      }
+        callback(data)
     }
   } catch (error) {
     dispatch(registerUserFailed(error));

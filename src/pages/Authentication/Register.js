@@ -49,7 +49,9 @@ const Register = () => {
 const payload = {...values} 
 delete payload.confirm_password
 // console.log("payload", payload)
-            dispatch(registerUser(payload));
+            dispatch(registerUser(payload,()=>{
+                toast.success(data)
+            }));
         }
     });
 
@@ -72,8 +74,9 @@ delete payload.confirm_password
     }, [dispatch]);
 
     useEffect(() => {
+        const redirectEnpoint = redirectUrl ?"/user/login" : "/vendor/login"
         if (success) {
-            setTimeout(() => history("/admin/login"), 3000);
+            setTimeout(() => history(redirectEnpoint), 3000);
         }
 
         setTimeout(() => {
@@ -83,13 +86,13 @@ delete payload.confirm_password
     }, [dispatch, success, error, history]);
 
     document.title = "InfiniteB2B";
-
     return (
         <React.Fragment>
             <ParticlesAuth>
                 <div className="auth-page-content mt-lg-5">
                     <Container>
                         <Row>
+                             <ToastContainer closeButton={false} limit={1} />
                             <Col lg={12}>
                                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                                     <div>

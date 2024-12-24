@@ -1,7 +1,7 @@
 const isUser = window.location.pathname.includes("user")
 //REGISTER
 // export const POST_FAKE_REGISTER = "/auth/signup";
-export const POST_FAKE_REGISTER = "/register/admin"; 
+export const POST_FAKE_REGISTER = !isUser ? "/api/vendor/register" : "/register/admin"; 
 
 //LOGIN
 // export const POST_FAKE_LOGIN = "/auth/signin";
