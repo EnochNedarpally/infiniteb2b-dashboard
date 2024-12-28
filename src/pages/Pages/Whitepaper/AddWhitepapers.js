@@ -37,7 +37,7 @@ const AddWhitepaper = () => {
   const fetchRandomRecords = async () => {
     try {
       const response = await axios.get('https://infiniteb2b.com:8443/api/category',config);
-      setOptions(response.data.data.slice(0, 10).map(item => item.name))
+      setOptions(response.data?.slice(0, 10).map(item => item.name))
       // console.log("response", response)
     } catch (error) {
       console.error('Error fetching random records:', error);

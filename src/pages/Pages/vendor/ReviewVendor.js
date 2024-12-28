@@ -219,7 +219,6 @@ const ReviewVendor = () => {
     const formData = new FormData();
     formData.append('vendorId', vendorId);
     try {
-      console.log("clicked", status)
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data',

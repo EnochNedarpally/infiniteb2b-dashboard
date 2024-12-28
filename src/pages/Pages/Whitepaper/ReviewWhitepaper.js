@@ -50,7 +50,6 @@ const ReviewWhitepaper = () => {
           setModal(false)
         } catch (error) {
           toast.error(error)
-          console.log("handleStatus",error)
         }
       }
 

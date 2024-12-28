@@ -26,7 +26,6 @@ const UserDash = () => {
             "https://infiniteb2b.com:8443/api/user/dashboard",
             config
           );
-          console.log(data)
           const widgetsData = data.ecomWidgets; 
           setTotalecomWidgets(widgetsData); 
      

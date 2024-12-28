@@ -107,7 +107,6 @@ const UserAllWhitepapers = () => {
     };
     // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
     const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allwhitepapers",config)
-    console.log("data", data)
     setCategories(data.data)
     
   }

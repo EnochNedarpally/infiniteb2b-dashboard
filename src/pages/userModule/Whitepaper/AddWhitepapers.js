@@ -40,9 +40,7 @@ const VendorAddWhitepaper = () => {
   };
   useEffect(() => {
     let interval = null
-    console.log("query", query)
     if (query) {
-      console.log("queryunder", query)
       interval = setTimeout(() => {
         fetchSearchResults(query)
       }, 400)
@@ -61,7 +59,6 @@ const VendorAddWhitepaper = () => {
     try {
 
       const res = await axios.get(`https://infiniteb2b.com:8443/api/category?name=${query}`, config)
-      console.log("res.data", res.data)
       setOptions(res.data.slice(0, 10).map(item => item.name));
     } catch (error) {
       console.error('Error fetching search results:', error);

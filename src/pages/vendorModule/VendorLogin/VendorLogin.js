@@ -50,9 +50,8 @@ const VendorLogin = (props) => {
         formData.append("email", values.email);
         formData.append("password", values.password);
 
-        console.log("FormData being sent:");
         for (let pair of formData.entries()) {
-          console.log(pair[0] + ": " + pair[1]);
+          // console.log(pair[0] + ": " + pair[1]);
         }
 
         const response = await axios.post(

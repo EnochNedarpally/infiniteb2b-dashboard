@@ -89,7 +89,7 @@ const AllCategory = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
+    const data = await axios.get("https://infiniteb2b.com:8443/api/category/dashboard-admin",config)
     setCategories(data.data)
     
   }
@@ -316,18 +316,18 @@ const AllCategory = () => {
       }, 
       {
         header: "No. of WhitePapers",
-        accessorKey: "solutionSetCount",
+        accessorKey: "totalWhitePapers",
         enableColumnFilter: false,
       },
       
       {
         header: "Total Subscibers",
-        accessorKey: "isSubscribe",
+        accessorKey: "totalSubscribers",
         enableColumnFilter: false,
       },
       {
         header: "Total Downloads",
-        accessorKey: "solutionSetCount",
+        accessorKey: "totalDownloads",
         enableColumnFilter: false,
       },
       {

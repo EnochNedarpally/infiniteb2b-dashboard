@@ -104,7 +104,6 @@ const AllAdmin = () => {
   useEffect(()=>{
     
     fetchCategories();
-    console.log("cdsbvcds")
     
   },[])
   const fetchCategories=async()=>{
