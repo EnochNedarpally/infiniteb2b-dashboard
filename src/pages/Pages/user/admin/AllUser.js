@@ -121,6 +121,13 @@ const AllUser = () => {
         header: "News Letters Subscribed",
         accessorKey: "newsLetterSubscribed",
         enableColumnFilter: false,
+        cell: (cell) => {
+          return (
+            <div className="d-flex justify-content-center">
+             {cell.row.original.newsLetterSubscribed == "0" ? "No" : "Yes"}
+            </div>
+          );
+        },
       },
       {
         header: "Total Category Subscribed Count",

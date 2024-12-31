@@ -424,6 +424,25 @@ const AllWhitepapers = () => {
   const [info, setInfo] = useState([]);
   const [isExportCSV, setIsExportCSV] = useState(false);
 
+  const handleDelete = async()=>{
+      const formData = new FormData();
+      formData.append('solutionId', whitePaperData.id);
+      try {
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+          }
+        };
+        await axios.put(`https://infiniteb2b.com:8443/admin/reject-solutionsets`, formData, config)
+        toast.success("Whitepaper Deleted")
+        fetchWhitepapers()
+        setModal(false)
+      } catch (error) {
+        toast.error(error)
+      }
+  }
+
   document.title = "InfiniteB2B";
   return (
     <React.Fragment>
@@ -592,14 +611,23 @@ const AllWhitepapers = () => {
                                     </div>
                                   )}
                                 </div>
-
-                                <button
-                                  type="submit"
-                                  className="btn btn-primary"
-                                  disabled={!isModified}
-                                >
-                                  Submit
-                                </button>
+                                <div style={{display:"flex",justifyContent:"space-between"}}>
+                                  <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    disabled={!isModified}
+                                  >
+                                    Submit
+                                  </button>
+                                  <button
+                                  type="button"
+                                    style={{ backgroundColor: "red", color: "white" }}
+                                    className="btn "
+                                    onClick={()=>handleDelete()}
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
                               </form>
                             </CardBody>
                           </Card>
