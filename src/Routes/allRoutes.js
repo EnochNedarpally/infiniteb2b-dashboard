@@ -345,7 +345,7 @@ const authProtectedRoutes = [
   { path: "/add-blogs-category", component: <AddBlogsCategory/> },
   { path: "/all-blogs-category", component: <AllBlogsCategory/> },
   { path: "/all-blogs", component: <AllBlogs /> },
-  { path: "add-new-blog", component: <AddNewBlog/> },
+  { path: "/add-new-blog", component: <AddNewBlog/> },
 
 
 

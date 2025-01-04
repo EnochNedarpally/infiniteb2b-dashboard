@@ -1,92 +1,128 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import axios from 'axios';
-import { useQuill } from "react-quilljs";
-import { Form } from 'react-router-dom';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import UiContent from "../../../Components/Common/UiContent";
-
-
-import BreadCrumb from "../../../Components/Common/BreadCrumb";
+import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const AddNewsLetters = () => {
   const [file, setFile] = useState(null);
   const [category, setCategory] = useState('');
   const [desc, setDesc] = useState('');
   const [title, setTitle] = useState('');
-  const [bannerImage, setBannerImage] = useState(null);
-  const [featuredImage, setFeaturedImage] = useState(null);
-  const [featuredImagePreview, setFeaturedImagePreview] = useState(null); // For preview
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const {  quillRef } = useQuill();
-  const token = 'your_jwt_token_here'; // Replace with your token
+  const [selectedOptions, setSelectedOptions] = useState("");
+
+  const [query, setQuery] = useState('');
+  const [options, setOptions] = useState([]);
+  const [isFocused, setIsFocused] = useState(false)
+  const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
+  const navigate = useNavigate()
   const config = {
+
     headers: {
-      Authorization: `Bearer ${token}`,
-    },
+      'Authorization': `Bearer ${token}`
+    }
   };
+  useEffect(() => {
+    fetchRandomRecords();
+  }, []);
 
-  const handleBannerImageChange = (files) => {
-    if (files && files[0]) {
-      setBannerImage(files[0]);
+  const fetchRandomRecords = async () => {
+    try {
+      const response = await axios.get('https://infiniteb2b.com:8443/api/category',config);
+      setOptions(response.data?.slice(0, 10).map(item => item))
+    } catch (error) {
+      console.error('Error fetching random records:', error);
+    }
+  };
+  useEffect(() => {
+    let interval = null
+    if (query) {
+      interval = setTimeout(() => {
+        fetchSearchResults(query)
+      }, 400)
+    }
+    return () => {
+      clearTimeout(interval)
+    }
+  }, [query])
+
+
+  const fetchSearchResults = async (query) => {
+    if (!query) {
+      setOptions([]);
+      return;
+    }
+    try {
+
+      const res = await axios.get(`https://infiniteb2b.com:8443/api/category?name=${query}`, config)
+      setOptions(res.data.slice(0, 10).map(item => item));
+    } catch (error) {
+      console.error('Error fetching search results:', error);
     }
   };
 
-  const handleFeaturedImageChange = (files) => {
-    if (files && files[0]) {
-      setFeaturedImage(files[0]);
-      // Create a preview URL
-      setFeaturedImagePreview(URL.createObjectURL(files[0]));
-    }
+  const handleInputChange = (event) => {
+    setIsFocused(true)
+    setQuery(event.target.value);
+  };
+
+  const handleFileChange = (acceptedFiles) => {
+    setFile(acceptedFiles[0]);
+  };
+
+  const handleImageChange = (acceptedFiles) => {
+    setImage(acceptedFiles[0]);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!file || !category || !desc || !title || !bannerImage || !featuredImage) {
+    if (!file || !category || !desc || !title || !image) {
       alert('Please fill in all fields');
       return;
     }
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('category', category);
+    formData.append('categoryId', category.id);
     formData.append('desc', desc);
-    formData.append('title', title);
-    formData.append('bannerImage', bannerImage);
-    formData.append('featuredImage', featuredImage);
+    formData.append('name', title);
+    formData.append('image', image);
 
     setLoading(true);
     setError(null);
-    setSuccess(false);
+    setSuccess(true);
 
     try {
+      const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/vendor/add-solutionset',
+        'https://infiniteb2b.com:8443/api/newsletter/add-newsletter',
+        
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
           },
         }
       );
-
-      if (response.status === 200) {
         setSuccess(true);
         setFile(null);
         setCategory('');
         setDesc('');
         setTitle('');
-        setBannerImage(null);
-        setFeaturedImage(null);
-        setFeaturedImagePreview(null);
-      }
+        setImage(null);
+        toast.success("NewsLetter Created successfullly")
+        navigate("/all-news-letters")
     } catch (err) {
+      toast.error(err?.response?.data?.message ?? 'Error uploading file')
       setError(err?.response?.data?.message ?? 'Error uploading file');
-      console.error(err);
+      console.log(err, "err")
     } finally {
       setLoading(false);
     }
@@ -94,19 +130,52 @@ const AddNewsLetters = () => {
 
   return (
     <React.Fragment>
-      <div className="page-content m-0">
+      <div className="page-content">
         <Container fluid>
+          <ToastContainer closeButton={false} limit={1} />
           <Row>
             <Col lg={12}>
               <Card>
-                <CardHeader className="card-header m-0">
-                  <h4 className="card-title mb-0">Add NewsLetter</h4>
+                <CardHeader className="card-header">
+                  <h4 className="card-title mb-0">Add Newsletter </h4>
                 </CardHeader>
-                <CardBody className='m-0'>
+                <CardBody>
+                  <p className="text-muted">
+                    Upload your PDF files along with relevant details using this form.
+                  </p>
                   <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
+                    <div className="mb-3">
+                      <label className="form-label">File:</label>
+                      <div
+                        className="dropzone dz-clickable"
+                        onClick={() => document.getElementById('fileInput').click()}
+                      >
+                        <div className="dz-message needsclick">
+                          <div className="mb-3">
+                            <i className="display-4 text-muted ri-upload-cloud-2-fill" />
+                          </div>
+                          <h4>Drop PDF files here or click to upload PDF.</h4>
+                        </div>
+                      </div>
+                      <input
+                        type="file"
+                        id="fileInput"
+                        accept=".pdf"
+                        style={{ display: 'none' }}
+                        onChange={(e) => handleFileChange(e.target.files)}
+                      />
+                      {file && (
+                        <div className="mt-2">
+                          <p>
+                            <strong>Selected File:</strong> {file.name}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mb-3">
                       <label htmlFor="title" className="form-label">
-                      NewsLetter Name
+                        Newsletter Name
                       </label>
                       <input
                         type="text"
@@ -117,79 +186,93 @@ const AddNewsLetters = () => {
                         required
                       />
                     </div>
-                    <div className="mb-4">
-                      <label htmlFor="title" className="form-label">
-                     Category
+
+                    <div className="mb-3">
+                      <label htmlFor="desc" className="form-label">
+                      Newsletter Description:
                       </label>
-                      <input
-                        type="text"
-                        id="title"
+                      <textarea
+                        id="desc"
                         className="form-control"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        value={desc}
+                        onChange={(e) => setDesc(e.target.value)}
                         required
                       />
                     </div>
-                    <div className="mb-4">
-                      <label htmlFor="title" className="form-label">
-                      NewsLetter Audience 
+                    <div className="mb-3">
+                      <label htmlFor="category" className="form-label cursor-pointer">
+                        Category:
                       </label>
                       <input
                         type="text"
-                        id="title"
+                        value={query}
+                        onChange={handleInputChange}
+                        placeholder="Search a category"
+                        onClick={()=>setIsFocused(true)}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setTimeout(() => setIsFocused(false), 100)} // Delay hiding
+                         className="form-control cursor-pointer"
+                      />
+                      {isFocused && (
+                        <ul className="absolute w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-64 overflow-auto">
+                          {options.map((item) => (
+                            <li
+                              key={item.id}
+                              onMouseDown={(e) => {
+                                e.preventDefault()
+                                setCategory(item);
+                                setIsFocused(false); 
+                                setQuery(''); 
+                              }}
+                              className="p-3 cursor-pointer hover:bg-gray-100"
+                            >
+                              {item.name}
+                            </li>
+                          ))}
+                          {query && options.length === 0 && (
+                            <li className="p-3 text-gray-500">No results found</li>
+                          )}
+                        </ul>
+                      )}
+                    </div>
+                    {category && (
+                      <p className="text-info mt-2">
+                        <strong>Selected Category:</strong> {category.name}
+                      </p>
+                    )}
+
+
+
+                    <div className="mb-3">
+                      <label htmlFor="image" className="form-label">
+                        Image:
+                      </label>
+                      <input
+                        type="file"
+                        id="image"
+                        accept="image/*"
                         className="form-control"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => handleImageChange(e.target.files)}
                         required
                       />
+                      {image && (
+                        <div className="mt-2">
+                          <p>
+                            <strong>Selected Image:</strong> {image.name}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                
 
-
-
-
-<Row className="mt-2">
-            <Col lg={12}>
-           
-              <Card>
-                <CardHeader>
-                  <h4 className="card-title mb-0">NewsLetter Content</h4>
-                </CardHeader>
-                <CardBody>                  
-                  <div className="snow-editor" style={{ height: 300 }}>
-                    <div ref={quillRef} />
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-       
-                    <Row className="mt-2">
-  <Col lg={6}>
-    <div className="d-flex align-items-center" style={{ gap: '10px' }}>
-      <button
-        type="submit"
-        className="btn btn-primary"
-        disabled={loading}
-      >
-        {loading ? 'Uploading...' : 'Schedule'}
-      </button>
-      <button
-        type="submit"
-        className="btn btn-primary"
-        disabled={loading}
-      >
-        {loading ? 'Uploading...' : 'Immediate Send'}
-      </button>
-    </div>
-  </Col>
-</Row>
-
-                  
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={loading}
+                    >
+                      {loading ? 'Uploading...' : 'Submit'}
+                    </button>
                   </form>
 
-                  {success && <p className="text-success mt-3">File uploaded successfully!</p>}
-                  {error && <p className="text-danger mt-3">{error}</p>}
                 </CardBody>
               </Card>
             </Col>

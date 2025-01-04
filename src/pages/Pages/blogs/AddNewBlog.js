@@ -1,192 +1,236 @@
-import React, { useState } from 'react';
+
+
+import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import axios from 'axios';
-import { useQuill } from "react-quilljs";
+import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
-const AddNewBlog = () => {
-  const [blogData, setBlogData] = useState({
-    title: '',
-    category: '',
-    desc: '',
-  });
+const AddNewBlogs = () => {
+  const [category, setCategory] = useState('');
+  const [desc, setDesc] = useState('');
+  const [title, setTitle] = useState('');
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState("");
 
-  const [images, setImages] = useState({
-    bannerImage: null,
-    featuredImage: null,
-    featuredImagePreview: null,
-  });
-
-  const [status, setStatus] = useState({
-    loading: false,
-    success: false,
-    error: null,
-  });
-
-  const { quillRef } = useQuill();
-  const token = 'your_jwt_token_here'; // Replace with your token
-  const API_URL = 'https://infiniteb2b.com:8443/api/vendor/add-solutionset';
-
+  const [query, setQuery] = useState('');
+  const [options, setOptions] = useState([]);
+  const [isFocused, setIsFocused] = useState(false)
+  const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
+  const navigate = useNavigate()
   const config = {
+
     headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setBlogData((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const handleImageChange = (e, type) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImages((prev) => ({
-        ...prev,
-        [type]: file,
-        ...(type === 'featuredImage' && { featuredImagePreview: URL.createObjectURL(file) }),
-      }));
+      'Authorization': `Bearer ${token}`
     }
+  };
+  useEffect(() => {
+    fetchRandomRecords();
+  }, []);
+
+  const fetchRandomRecords = async () => {
+    try {
+      const response = await axios.get('https://infiniteb2b.com:8443/admin/allBlogsCategory',config);
+      setOptions(response.data?.slice(0, 10).map(item => item))
+    } catch (error) {
+      console.error('Error fetching random records:', error);
+    }
+  };
+  useEffect(() => {
+    let interval = null
+      interval = setTimeout(() => {
+        fetchSearchResults(query)
+      }, 400)
+    return () => {
+      clearTimeout(interval)
+    }
+  }, [query])
+
+
+  const fetchSearchResults = async (query) => {
+    if (!query) {
+      fetchRandomRecords();
+      return;
+    }
+    try {
+
+      const res = await axios.get(`https://infiniteb2b.com:8443/admin/allBlogsCategory?name=${query}`, config)
+      setOptions(res.data.slice(0, 10).map(item => item));
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setIsFocused(true)
+    setQuery(event.target.value);
+  };
+
+  const handleImageChange = (acceptedFiles) => {
+    setImage(acceptedFiles[0]);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const { title, category, desc } = blogData;
-    const { bannerImage, featuredImage } = images;
-
-    if (!title || !category || !desc || !bannerImage || !featuredImage) {
+    if (!category || !desc || !title || !image) {
+      // if (!file || !category || !desc || !title ) {
       alert('Please fill in all fields');
       return;
     }
 
     const formData = new FormData();
-    formData.append('title', title);
-    formData.append('category', category);
-    formData.append('desc', desc);
-    formData.append('bannerImage', bannerImage);
-    formData.append('featuredImage', featuredImage);
+    formData.append('blogsCategoryId', category.blogCategoryId);
+    formData.append('blogContent', desc);
+    formData.append('name', title);
+    formData.append('image', image);
 
-    setStatus({ loading: true, success: false, error: null });
+    setLoading(true);
+    setError(null);
+    setSuccess(true);
 
     try {
-      const response = await axios.post(API_URL, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        setStatus({ loading: false, success: true, error: null });
-        setBlogData({ title: '', category: '', desc: '' });
-        setImages({ bannerImage: null, featuredImage: null, featuredImagePreview: null });
-        quillRef.current.firstChild.innerHTML = ''; // Reset Quill editor
-      }
+      
+      const response = await axios.post(
+        'https://infiniteb2b.com:8443/api/blogs/add-blogs',
+        
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+        setSuccess(true);
+        setCategory('');
+        setDesc('');
+        setTitle('');
+        setImage(null);
+        setLoading(false)
+        navigate("/all-blogs")
     } catch (err) {
-      setStatus({
-        loading: false,
-        success: false,
-        error: err?.response?.data?.message || 'Error uploading file',
-      });
+      // setError(err?.response?.data?.message ?? 'Error uploading file');
+      toast.error(err?.response?.data?.message ?? 'Encountered an error while publishing Blog')
+      setError(err?.response?.data?.message ?? 'Encountered an error while publishing Blog');
+      console.log(err, "err")
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
-
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
+          <ToastContainer closeButton={false} limit={1} />
           <Row>
             <Col lg={12}>
               <Card>
-                <CardHeader>
-                  <h4 className="card-title mb-0">Add New Blog</h4>
+                <CardHeader className="card-header">
+                  <h4 className="card-title mb-0">Add Blogs </h4>
                 </CardHeader>
                 <CardBody>
                   <form onSubmit={handleSubmit}>
-                    {/* Blog Title */}
-                    <div className="mb-4">
+                    <div className="mb-3">
                       <label htmlFor="title" className="form-label">
-                        Blog Title
+                        Blogs Name
                       </label>
                       <input
                         type="text"
                         id="title"
                         className="form-control"
-                        value={blogData.title}
-                        onChange={handleInputChange}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                         required
                       />
                     </div>
 
-                    {/* Blog Category */}
-                    <div className="mb-4">
-                      <label htmlFor="category" className="form-label">
-                        Blog Category
+                    <div className="mb-3">
+                      <label htmlFor="desc" className="form-label">
+                      Blogs Description:
+                      </label>
+                      <textarea
+                        id="desc"
+                        className="form-control"
+                        value={desc}
+                        onChange={(e) => setDesc(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="category" className="form-label cursor-pointer">
+                        Category:
                       </label>
                       <input
                         type="text"
-                        id="category"
-                        className="form-control"
-                        value={blogData.category}
+                        value={query}
                         onChange={handleInputChange}
-                        required
+                        onClick={()=>setIsFocused(true)}
+                        placeholder="Search a category"
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setTimeout(() => setIsFocused(false), 100)} // Delay hiding
+                         className="form-control cursor-pointer"
                       />
+                      {isFocused && (
+                        <ul className="absolute w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-64 overflow-auto">
+                          {options.map((item) => (
+                            <li
+                              key={item.id}
+                              onMouseDown={(e) => {
+                                e.preventDefault()
+                                setCategory(item);
+                                setIsFocused(false); 
+                                setQuery(''); 
+                              }}  
+                              className="p-3 cursor-pointer hover:bg-gray-100"
+                            >
+                              {item.name}
+                            </li>
+                          ))}
+                          {query && options.length === 0 && (
+                            <li className="p-3 text-gray-500">No results found</li>
+                          )}
+                        </ul>
+                      )}
                     </div>
+                    {category && (
+                      <p className="text-info mt-2">
+                        <strong>Selected Category:</strong> {category.name}
+                      </p>
+                    )}
 
-                    {/* Blog Content */}
-                    <Row className="mt-2">
-                      <Col lg={12}>
-                        <Card>
-                          <CardHeader>
-                            <h4 className="card-title mb-0">Blog Content</h4>
-                          </CardHeader>
-                          <CardBody>
-                            <div className="snow-editor" style={{ height: 300 }}>
-                              <div ref={quillRef} />
-                            </div>
-                          </CardBody>
-                        </Card>
-                      </Col>
-                    </Row>
-
-                    {/* Featured Image */}
-                    <div className="mb-4">
-                      <label htmlFor="featuredImage" className="form-label">
-                        Insert Featured Image
+                    <div className="mb-3">
+                      <label htmlFor="image" className="form-label">
+                        Image:
                       </label>
                       <input
                         type="file"
-                        id="featuredImage"
+                        id="image"
                         accept="image/*"
                         className="form-control"
-                        onChange={(e) => handleImageChange(e, 'featuredImage')}
+                        onChange={(e) => handleImageChange(e.target.files)}
                         required
                       />
-                      {images.featuredImage && (
+                      {image && (
                         <div className="mt-2">
-                          <img
-                            src={images.featuredImagePreview}
-                            alt="Preview"
-                            style={{ maxWidth: '100%', maxHeight: '200px' }}
-                          />
+                          <p>
+                            <strong>Selected Image:</strong> {image.name}
+                          </p>
                         </div>
                       )}
                     </div>
 
-
-                    {/* Submit Button */}
                     <button
                       type="submit"
                       className="btn btn-primary"
-                      disabled={status.loading}
+                      disabled={loading}
                     >
-                      {status.loading ? 'Uploading...' : 'Publish'}
+                      {loading ? 'Uploading...' : 'Submit'}
                     </button>
                   </form>
-
-                  {/* Feedback Messages */}
-                  {status.success && <p className="text-success mt-3">File uploaded successfully!</p>}
-                  {status.error && <p className="text-danger mt-3">{status.error}</p>}
                 </CardBody>
               </Card>
             </Col>
@@ -197,4 +241,4 @@ const AddNewBlog = () => {
   );
 };
 
-export default AddNewBlog;
+export default AddNewBlogs;
