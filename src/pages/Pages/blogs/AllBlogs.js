@@ -19,6 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import TableContainer from "../../../Components/Common/TableContainer";
 import axios from "axios";
 import { mediaBaseURL } from "../../../helpers/api_helper";
+import ContentEditor from "../../../Components/Common/ContentEditor";
 
 const AllBlogs = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
@@ -41,7 +42,7 @@ const AllBlogs = () => {
     const [Blogs, setBlogs] = useState([]);
     const [blogData, setBlogData] = useState({});
     const [Blog, setBlog] = useState({});
-
+ const [blogContent, setBlogContent] = useState("")
 
   const handleAddBlogs = () => {
     navigate('/add-new-blog'); 
@@ -72,10 +73,16 @@ const AllBlogs = () => {
         clearTimeout(interval)
       }
     }, [query])
+    useEffect(()=>{
+      if(blogContent){
+        setIsModified(true)
+        setBlog(prev => ({ ...prev, content: blogContent }));
+      }
+    },[blogContent])
   const fetchRandomRecords = async () => {
     try {
       const response = await axios.get('https://infiniteb2b.com:8443/api/blogs/get-blogs-category',config);
-      setOptions(response.data.slice(0, 10).map(item => item.name))
+      setOptions(response.data.slice(0, 10).map(item => item))
     } catch (error) {
       console.error('Error fetching random records:', error);
     }
@@ -122,53 +129,102 @@ const AllBlogs = () => {
   };
 
   const handleSubmit = async (event) => {
-    // event.preventDefault();
-    // const formData = new FormData();
-    // formData.append("solutionSetId",blogData?.id)
-    // Object.keys(Blog).map((key) => {
-    //   if (key) {
-    //     let value = Blog[key];
-    //     if (value instanceof Blob) {
-    //       formData.append(key, value);
-    //     } else {
-    //       value = typeof value === 'object' ? JSON.stringify(value) : value;
-    //       formData.append(key, value);
-    //     }
-    //   }
-    // });
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("blogId",blogData?.id)
+    Object.keys(Blog).map((key) => {
+      if (key) {
+        let value = Blog[key];
+        if (value instanceof Blob) {
+          formData.append(key, value);
+        } else {
+          value = typeof value === 'object' ? JSON.stringify(value) : value;
+          formData.append(key, value);
+        }
+      }
+    });
   
-    // try {
-    //   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    //   const response = await axios.post(
-    //     'https://infiniteb2b.com:8443/api/vendor/update-solutionset',
-    //     formData,
-    //     {
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data',
-    //         'Authorization': `Bearer ${token}`,
-    //       },
-    //     }
-    //   );
-    //   if (response.status) {
+    try {
+      const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
+      const response = await axios.put(
+        'https://infiniteb2b.com:8443/api/blogs/edit-blogs',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status) {
         
-    //     setBlog({});
-    //     setIsModified(false)
-    //     toast.success("Blog Updated")
-    //     fetchBlogs()
-    //     toggle()
+        setBlog({});
+        setIsModified(false)
+        toast.success("Blog Updated")
+        fetchBlogs()
+        toggle()
         
-    //   }
-    // } catch (err) {
-    //   toast.error(err?.response?.data?.message ?? 'Error uploading file')
-    //   console.log(err, "err")
-    // } finally {
-    //   setLoading(false);
-    // }
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message ?? 'Encountered an Error while Updating Blog')
+      console.log(err, "err")
+    } finally {
+      setLoading(false);
+    }
   };
+     const showConfirmToast = (itemId) => {
+        toast(
+          <div>
+            <h3>Are you sure you want to delete this item?</h3>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+              <button
+                onClick={() => handleCancel()}
+                className="cancel-btn"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleConfirm(itemId)}
+                className="confirm-btn"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>,
+          {
+            position: "top-center",
+            autoClose: false, // Stay open until the user takes action
+            closeOnClick: false,
+            draggable: false,
+            pauseOnHover: false,
+            closeButton: false,
+          }
+        );
+      };
+
+  const handleDelete = ()=>{
+    showConfirmToast()
+  }
+  const handleCancel = ()=>{
+    toast.dismiss()
+  }
+  const handleConfirm = async()=>{
+    try {
+      const data = await axios.delete(`https://infiniteb2b.com:8443/api/blogs/delete-blog/${blogData.id}`,config)
+      toast.warn("Item Deleted")
+      fetchBlogs()
+      toggle()
+      toast.dismiss()
+    } catch (error) {
+      toast.error("Something went wrong, Please try again later..")
+      toast.dismiss()
+    }
+   
+  }
   
   const handleBlogClick = useCallback((arg) => {
     const company = arg;
-    setBlogData({...arg.solutionSet,category:arg.categoryName})
+    setBlogData({...arg})
     setIsEdit(true);
     toggle();
   }, [toggle]);
@@ -188,7 +244,7 @@ const AllBlogs = () => {
         
       },
       {
-        header: "Blogs Name",
+        header: "Blog Name",
         accessorKey: "name",
         enableColumnFilter: false,
       },
@@ -243,13 +299,13 @@ const AllBlogs = () => {
                 <CardBody className="pt-0 ">
                   <div className="flex-grow-1 ">
                        <div className="d-flex justify-content-between align-items-center my-2 mx-1">
-                       <h4 className="card-title mb-0">Blogs List</h4>
+                       <h4 className="card-title mb-0">Blog List</h4>
                        <Button
                          color="secondary"
                          style={{ backgroundColor: 'purple', borderColor: 'purple' }}
                          onClick={handleAddBlogs}
                        >
-                         <i className="ri-add-fill me-1 align-bottom"></i> Add Blogs
+                         <i className="ri-add-fill me-1 align-bottom"></i> Add Blog
                        </Button>
                      </div>
                       <TableContainer
@@ -277,51 +333,25 @@ const AllBlogs = () => {
                             <CardHeader className="card-header">
                             </CardHeader>
                             <CardBody>
-                              <p className="text-muted">
-                                Upload your PDF files along with relevant details using this form.
-                              </p>
                               <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
-                                  <label className="form-label">File:</label>
-                                  <div
-                                    className="dropzone dz-clickable"
-                                    onClick={() => document.getElementById('fileInput').click()}
-                                  >
-                                    <div className="dz-message needsclick">
-                                      <div className="mb-3">
-                                        <i className="display-4 text-muted ri-upload-cloud-2-fill" />
-                                      </div>
-                                      <h4>Drop PDF files here or click to upload PDF.</h4>
-                                    </div>
-                                  </div>
-                                  <input
-                                    type="file"
-                                    id="fileInput"
-                                    accept=".pdf"
-                                    style={{ display: 'none' }}
-                                    onChange={(e) => handleFileChange(e.target.files)}
-                                  />
-                                  {file && (
-                                    <div className="mt-2">
-                                      <p>
-                                        <strong>Selected File:</strong> {file.name}
-                                      </p>
-                                    </div>
-                                  )}
-                                </div>
-
-                                <div className="mb-3">
-                                  <label htmlFor="title" className="form-label">
+                                  <label htmlFor="name" className="form-label">
                                     Blog Name
                                   </label>
                                   <input
                                     type="text"
-                                    id="title"
-                                    name="title"
+                                    id="name"
+                                    name="name"
                                     className="form-control"
-                                    value={Blog?.title ?? blogData?.title}
+                                    value={Blog?.name ?? blogData?.name}
                                     onChange={(e) => handleBlogChange(e.target)}
                                   />
+                                </div>
+                                <div className="mb-3">
+                                  <label htmlFor="desc" className="form-label">
+                                    Blog Content:
+                                  </label>
+                                   <ContentEditor content={Blog?.content ?? blogData.content} setContent={setBlogContent}/>
                                 </div>
                                 <div className="mb-3">
                                   <label htmlFor="category" className="form-label cursor-pointer">
@@ -330,7 +360,7 @@ const AllBlogs = () => {
                                   <input
                                     type="text"
 
-                                    value={(Blog?.categoryName ?? blogData?.categoryName )||query}
+                                    value={(Blog?.category ?? blogData?.categoryName )||query}
                                     onChange={handleInputChange}
                                     placeholder="Search a category"
                                     onFocus={() => setIsFocused(true)}
@@ -341,18 +371,18 @@ const AllBlogs = () => {
                                     <ul className="absolute w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-64 overflow-auto">
                                       {options.map((item) => (
                                         <li
-                                          key={item}
+                                          key={item.id}
                                           onMouseDown={(e) => {
                                             e.preventDefault();
-                                            setCategory(item);
-                                            setBlog(prev => ({ ...prev, category: item }));
+                                            setCategory(item.name);
+                                            setBlog(prev => ({ ...prev, blogsCategoryId: item.id }));
                                             setIsModified(true)
                                             setIsFocused(false);
                                             setQuery('');
                                           }}
                                           className="p-3 cursor-pointer hover:bg-gray-100"
                                         >
-                                          {item}
+                                          {item.blogCategoryName}
                                         </li>
                                       ))}
                                       {query && options.length === 0 && (
@@ -362,11 +392,11 @@ const AllBlogs = () => {
                                   )}
                                 </div>
                                   <p className="form-label mt-2">
-                                    <strong>Selected Category:</strong> {category ? category : blogData.category}
+                                    <strong>Selected Category:</strong> {category ? category.blogCategoryName : blogData.category}
                                   </p>
                                 <div className="mb-3">
                                   <label htmlFor="image" className="form-label">
-                                    PDFPreview:
+                                    Image Preview:
                                   </label>
                                   <input
                                     type="file"
@@ -375,9 +405,9 @@ const AllBlogs = () => {
                                     className="form-control"
                                     onChange={(e) => handleImageChange(e.target.files)}
                                   />
-                                  {blogData?.imagePath && (
+                                  {blogData?.imageContent && (
                                     <div className="mt-2">
-                                      <img src={mediaBaseURL + blogData.imagePath} alt="Blog preview"
+                                      <img src={blogData?.imageContent} alt="Blog preview"
                                       style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }}/>
                                     </div>
                                   )}

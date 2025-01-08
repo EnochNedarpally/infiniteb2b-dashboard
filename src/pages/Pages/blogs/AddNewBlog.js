@@ -5,6 +5,7 @@ import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import ContentEditor from '../../../Components/Common/ContentEditor';
 
 const AddNewBlogs = () => {
   const [category, setCategory] = useState('');
@@ -15,7 +16,7 @@ const AddNewBlogs = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState("");
-
+ const [blogContent, setBlogContent] = useState("")
   const [query, setQuery] = useState('');
   const [options, setOptions] = useState([]);
   const [isFocused, setIsFocused] = useState(false)
@@ -75,15 +76,14 @@ const AddNewBlogs = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!category || !desc || !title || !image) {
-      // if (!file || !category || !desc || !title ) {
+    if (!category || !blogContent || !title || !image) {
       alert('Please fill in all fields');
       return;
     }
 
     const formData = new FormData();
     formData.append('blogsCategoryId', category.blogCategoryId);
-    formData.append('blogContent', desc);
+    formData.append('blogContent', blogContent);
     formData.append('name', title);
     formData.append('image', image);
 
@@ -112,10 +112,8 @@ const AddNewBlogs = () => {
         setLoading(false)
         navigate("/all-blogs")
     } catch (err) {
-      // setError(err?.response?.data?.message ?? 'Error uploading file');
       toast.error(err?.response?.data?.message ?? 'Encountered an error while publishing Blog')
       setError(err?.response?.data?.message ?? 'Encountered an error while publishing Blog');
-      console.log(err, "err")
       setLoading(false);
     } finally {
       setLoading(false);
@@ -130,13 +128,13 @@ const AddNewBlogs = () => {
             <Col lg={12}>
               <Card>
                 <CardHeader className="card-header">
-                  <h4 className="card-title mb-0">Add Blogs </h4>
+                  <h4 className="card-title mb-0">Add Blog </h4>
                 </CardHeader>
                 <CardBody>
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                       <label htmlFor="title" className="form-label">
-                        Blogs Name
+                        Blog Name
                       </label>
                       <input
                         type="text"
@@ -150,15 +148,9 @@ const AddNewBlogs = () => {
 
                     <div className="mb-3">
                       <label htmlFor="desc" className="form-label">
-                      Blogs Description:
+                      Blog Content:
                       </label>
-                      <textarea
-                        id="desc"
-                        className="form-control"
-                        value={desc}
-                        onChange={(e) => setDesc(e.target.value)}
-                        required
-                      />
+                      <ContentEditor content={blogContent} setContent={setBlogContent} />
                     </div>
                     <div className="mb-3">
                       <label htmlFor="category" className="form-label cursor-pointer">

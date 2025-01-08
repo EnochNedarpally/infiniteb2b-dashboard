@@ -97,7 +97,7 @@ delete payload.confirm_password
                                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                                     <div>
                                         <Link to="/" className="d-inline-block auth-logo">
-                                            <img src={logoLight} alt="" height="50" />
+                                            <img src={logoLight} style={{objectFit:'cover'}} alt="" width="450" height="80" />
                                         </Link>
                                     </div>
                                 </div>

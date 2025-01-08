@@ -12,6 +12,7 @@ import {
   Modal,
   ModalHeader,
   Button,
+  Alert,
 } from "reactstrap";
 
 import { toast, ToastContainer } from 'react-toastify';
@@ -19,9 +20,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import TableContainer from "../../../Components/Common/TableContainer";
 import axios from "axios";
 import { mediaBaseURL } from "../../../helpers/api_helper";
+import ContentEditor from "../../../Components/Common/ContentEditor";
+
+
 
 const AllNewsLetters = () => {
-  const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
+  const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
   const config = {
     headers: {  
       'Authorization': `Bearer ${token}`,
@@ -30,8 +34,7 @@ const AllNewsLetters = () => {
  const navigate = useNavigate()
   const [isEdit, setIsEdit] = useState(false);
   const [modal, setModal] = useState(false);
-   const [file, setFile] = useState(null);
-  const [category, setCategory] = useState('');
+  const [confirmationModal, setConfirmationModal] = useState(false);
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false)
@@ -41,13 +44,48 @@ const AllNewsLetters = () => {
     const [newsLetters, setnewsLetters] = useState([]);
     const [NewsLetterData, setNewsLetterData] = useState({});
     const [NewsLetter, setNewsLetter] = useState({});
+     const [newsletterContent, setNewsletterContent] = useState("")
 
 
+    const showConfirmToast = (itemId) => {
+      toast(
+        <div>
+          <h3>Are you sure you want to delete this item?</h3>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+            <button
+              onClick={() => handleCancel()}
+              className="cancel-btn"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => handleConfirm(itemId)}
+              className="confirm-btn"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>,
+        {
+          position: "top-center",
+          autoClose: false, // Stay open until the user takes action
+          closeOnClick: false,
+          draggable: false,
+          pauseOnHover: false,
+          closeButton: false,
+        }
+      );
+    };
   const handleAddNewsLetters = () => {
     navigate('/add-news-letters'); 
   };
 
-
+useEffect(()=>{
+  if(newsletterContent){
+    setIsModified(true)
+    setNewsLetter(prev => ({ ...prev, content: newsletterContent }));
+  }
+},[newsletterContent])
   const toggle = useCallback(() => {
     if (modal) {
       setModal(false);
@@ -89,7 +127,6 @@ const AllNewsLetters = () => {
     }
   }
 
-
   const fetchSearchResults = async (query) => {
     if (!query) {
       fetchRandomRecords();
@@ -123,47 +160,47 @@ const AllNewsLetters = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // const formData = new FormData();
-    // formData.append("solutionSetId",NewsLetterData?.id)
-    // Object.keys(NewsLetter).map((key) => {
-    //   if (key) {
-    //     let value = NewsLetter[key];
-    //     if (value instanceof Blob) {
-    //       formData.append(key, value);
-    //     } else {
-    //       value = typeof value === 'object' ? JSON.stringify(value) : value;
-    //       formData.append(key, value);
-    //     }
-    //   }
-    // });
+    const formData = new FormData();
+    formData.append("id",NewsLetterData?.id)
+    Object.keys(NewsLetter).map((key) => {
+      if (key) {
+        let value = NewsLetter[key];
+        if (value instanceof Blob) {
+          formData.append(key == "previewLink" ? "link" : key, value);
+        } else {
+          value = typeof value === 'object' ? JSON.stringify(value) : value;
+          formData.append(key == "previewLink" ? "link" : key, value);
+        }
+      }
+    });
   
-    // try {
-    //   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    //   const response = await axios.post(
-    //     'https://infiniteb2b.com:8443/api/vendor/update-solutionset',
-    //     formData,
-    //     {
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data',
-    //         'Authorization': `Bearer ${token}`,
-    //       },
-    //     }
-    //   );
-    //   if (response.status) {
+    try {
+      
+      const response = await axios.put(
+        'https://infiniteb2b.com:8443/api/newsletter/edit-newsletter',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status) {
         
-    //     setNewsLetter({});
-    //     setIsModified(false)
-    //     toast.success("NewsLetter Updated")
-    //     fetchNewsLetters()
-    //     toggle()
+        setNewsLetter({});
+        setIsModified(false)
+        toast.success("NewsLetter Updated")
+        fetchNewsLetters()
+        toggle()
         
-    //   }
-    // } catch (err) {
-    //   toast.error(err?.response?.data?.message ?? 'Encountered an error while publishing NewsLetter')
-    //   console.log(err, "err")
-    // } finally {
-    //   setLoading(false);
-    // }
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message ?? 'Encountered an error while publishing NewsLetter')
+      console.log(err, "err")
+    } finally {
+      setLoading(false);
+    }
   };
   // const validation = useFormik({
   //   // enableReinitialize : use this flag when initial values needs to be changed
@@ -197,7 +234,7 @@ const AllNewsLetters = () => {
   // Update Data
   const handleNewsLetterClick = useCallback((arg) => {
     const company = arg;
-    setNewsLetterData({...arg.solutionSet,category:arg.categoryName})
+    setNewsLetterData({...arg})
     setIsEdit(true);
     toggle();
   }, [toggle]);
@@ -217,13 +254,8 @@ const AllNewsLetters = () => {
         
       },
       {
-        header: "NewsLetters Name",
+        header: "NewsLetter Name",
         accessorKey: "name",
-        enableColumnFilter: false,
-      },
-      {
-        header: "Category",
-        accessorKey: "category",
         enableColumnFilter: false,
       },
       {
@@ -232,8 +264,8 @@ const AllNewsLetters = () => {
         enableColumnFilter: false,
       },
       {
-        header: "Total Subscribers",
-        accessorKey: "totalSubscribers",
+        header: "Total Views",
+        accessorKey: "totalViews",
         enableColumnFilter: false,
       },
       {
@@ -265,6 +297,27 @@ const AllNewsLetters = () => {
     [handleNewsLetterClick]
   );
 
+  const handleDelete = ()=>{
+    showConfirmToast()
+  }
+  const handleCancel = ()=>{
+    toast.dismiss()
+  }
+  const handleConfirm = async()=>{
+    try {
+      const data = await axios.delete(`https://infiniteb2b.com:8443/api/newsletter/delete-newsletter/${NewsLetterData.id}`,config)
+      navigate("/all-news-letters")
+      toast.warn("Item Deleted")
+      fetchNewsLetters()
+      toggle()
+      toast.dismiss()
+    } catch (error) {
+      toast.error("Something went wrong, Please try again later..")
+      toast.dismiss()
+    }
+   
+  }
+
   document.title = "InfiniteB2B";
   return (
     <React.Fragment>
@@ -277,13 +330,13 @@ const AllNewsLetters = () => {
                 <CardBody className="pt-0 ">
                   <div className="flex-grow-1 ">
                        <div className="d-flex justify-content-between align-items-center my-2 mx-1">
-                       <h4 className="card-title mb-0">NewsLetters List</h4>
+                       <h4 className="card-title mb-0">NewsLetter List</h4>
                        <Button
                          color="secondary"
                          style={{ backgroundColor: 'purple', borderColor: 'purple' }}
                          onClick={handleAddNewsLetters}
                        >
-                         <i className="ri-add-fill me-1 align-bottom"></i> Add NewsLetters
+                         <i className="ri-add-fill me-1 align-bottom"></i> Add NewsLetter
                        </Button>
                      </div>
                       <TableContainer
@@ -311,96 +364,24 @@ const AllNewsLetters = () => {
                             <CardHeader className="card-header">
                             </CardHeader>
                             <CardBody>
-                              <p className="text-muted">
-                                Upload your PDF files along with relevant details using this form.
-                              </p>
                               <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
-                                  <label className="form-label">File:</label>
-                                  <div
-                                    className="dropzone dz-clickable"
-                                    onClick={() => document.getElementById('fileInput').click()}
-                                  >
-                                    <div className="dz-message needsclick">
-                                      <div className="mb-3">
-                                        <i className="display-4 text-muted ri-upload-cloud-2-fill" />
-                                      </div>
-                                      <h4>Drop PDF files here or click to upload PDF.</h4>
-                                    </div>
-                                  </div>
-                                  <input
-                                    type="file"
-                                    id="fileInput"
-                                    accept=".pdf"
-                                    style={{ display: 'none' }}
-                                    onChange={(e) => handleFileChange(e.target.files)}
-                                  />
-                                  {file && (
-                                    <div className="mt-2">
-                                      <p>
-                                        <strong>Selected File:</strong> {file.name}
-                                      </p>
-                                    </div>
-                                  )}
-                                </div>
-
-                                <div className="mb-3">
-                                  <label htmlFor="title" className="form-label">
+                                  <label htmlFor="name" className="form-label">
                                     NewsLetter Name
                                   </label>
                                   <input
                                     type="text"
-                                    id="title"
-                                    name="title"
+                                    id="name"
+                                    name="name"
                                     className="form-control"
-                                    value={NewsLetter?.title ?? NewsLetterData?.title}
+                                    value={NewsLetter?.name ?? NewsLetterData?.name}
                                     onChange={(e) => handleNewsLetterChange(e.target)}
                                   />
                                 </div>
-                                <div className="mb-3">
-                                  <label htmlFor="category" className="form-label cursor-pointer">
-                                    Category:
-                                  </label>
-                                  <input
-                                    type="text"
-
-                                    value={(NewsLetter?.categoryName ?? NewsLetterData?.categoryName )||query}
-                                    onChange={handleInputChange}
-                                    placeholder="Search a category"
-                                    onFocus={() => setIsFocused(true)}
-                                    onBlur={() => setTimeout(() => setIsFocused(false), 100)} // Delay hiding
-                                    className="form-control cursor-pointer"
-                                  />
-                                  {isFocused && (
-                                    <ul className="absolute w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-64 overflow-auto">
-                                      {options.map((item) => (
-                                        <li
-                                          key={item}
-                                          onMouseDown={(e) => {
-                                            e.preventDefault();
-                                            setCategory(item);
-                                            setNewsLetter(prev => ({ ...prev, category: item }));
-                                            setIsModified(true)
-                                            setIsFocused(false);
-                                            setQuery('');
-                                          }}
-                                          className="p-3 cursor-pointer hover:bg-gray-100"
-                                        >
-                                          {item}
-                                        </li>
-                                      ))}
-                                      {query && options.length === 0 && (
-                                        <li className="p-3 text-gray-500">No results found</li>
-                                      )}
-                                    </ul>
-                                  )}
-                                </div>
-                                  <p className="form-label mt-2">
-                                    <strong>Selected Category:</strong> {category ? category : NewsLetterData.category}
-                                  </p>
+                                  <ContentEditor content={NewsLetter?.content ?? NewsLetterData.content} setContent={setNewsletterContent}/>
                                 <div className="mb-3">
                                   <label htmlFor="image" className="form-label">
-                                    PDFPreview:
+                                    Featured Image:
                                   </label>
                                   <input
                                     type="file"
@@ -409,20 +390,38 @@ const AllNewsLetters = () => {
                                     className="form-control"
                                     onChange={(e) => handleImageChange(e.target.files)}
                                   />
-                                  {NewsLetterData?.imagePath && (
+                                  {(!NewsLetter?.image && NewsLetterData?.image) ? (
                                     <div className="mt-2">
-                                      <img src={mediaBaseURL + NewsLetterData.imagePath} alt="NewsLetter preview"
+                                      <img src={NewsLetterData.image} alt="NewsLetter preview"
                                       style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }}/>
                                     </div>
-                                  )}
+                                  ) : <div className="mt-2">
+                                  <p>
+                                    <strong>Selected Image:</strong> {NewsLetter.image?.name}
+                                  </p>
+                                </div>}
                                 </div>
+                                <div className="mb-3">
+                                <label htmlFor="link" className="form-label">
+                                  Enter Link for NewsLetter
+                                </label>
+                                <input
+                                  type="text"
+                                  id="link"
+                                  name="previewLink"
+                                  className="form-control"
+                                  value={NewsLetter?.previewLink ?? NewsLetterData?.previewLink ?? ""}
+                                  onChange={(e) => handleNewsLetterChange(e.target)}
+                                  required
+                                />
+                              </div>
                                 <div style={{display:"flex",justifyContent:"space-between"}}>
                                   <button
                                     type="submit"
                                     className="btn btn-primary"
                                     disabled={!isModified}
                                   >
-                                    Submit
+                                    Update
                                   </button>
                                   <button
                                   type="button"
@@ -435,6 +434,21 @@ const AllNewsLetters = () => {
                                 </div>
                               </form>
                             </CardBody>
+                            {confirmationModal && (
+                              <div className="modal">
+                                <div className="modal-content">
+                                  <h3>Are you sure you want to delete this item?</h3>
+                                  <div className="modal-buttons">
+                                    <button onClick={handleCancel} className="cancel-btn">
+                                      Cancel
+                                    </button>
+                                    <button onClick={handleConfirm} className="confirm-btn">
+                                      Confirm
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </Card>
                         </Col>
                       </Row>
