@@ -293,6 +293,7 @@ import UserAllWhitepapers from "../pages/userModule/Whitepaper/AllWhitepapers ";
 import DownloadedWhitepapers from "../pages/userModule/DownloadedWhitepapers";
 import ViewedWhitepapers from "../pages/userModule/ViewedWhitepaper";
 import ViewWhitepaper from "../pages/Pages/Whitepaper/ViewWhitepaper";
+import ViewVendor from "../pages/Pages/vendor/ViewVendor";
 
 
 
@@ -369,6 +370,7 @@ const authProtectedRoutes = [
 
   //Vendors
   { path: "/admin/review-vendor", component: <ReviewVendor/> },
+  { path: "/admin/review-vendor/view", component: <ViewVendor/> },
   { path: "/admin/all-vendors", component: <AllVendors/> },
  
 

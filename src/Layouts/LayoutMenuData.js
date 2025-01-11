@@ -739,6 +739,26 @@ const Navdata = () => {
             label: "All Whitepapers",
             icon: "ri-pages-line",
             link: "/vendor/all-whitepapers",
+            subItems: [
+               
+                {
+                    id: "profile",
+                    label: "Whitepapers Submitted",
+                 
+                    link: "/vendor/all-whitepapers?status=",
+                    click: function (e) {
+                        e.preventDefault();
+                        setIsProfile(!isProfile);
+                    },
+                    parentId: "pages",
+                    stateVariables: isProfile,
+                  
+                },
+                { id: "approved", label: "Whitepapers Approved", link: "/vendor/all-whitepapers?status=1", parentId: "pages" },
+                { id: "pending", label: "Whitepapers Pending", link: "/vendor/all-whitepapers?status=2", parentId: "pages" },
+                { id: "rejected", label: "Whitepapers Rejected", link: "/vendor/all-whitepapers?status=3", parentId: "pages" },
+             
+            ],
             click: function (e) {
                 e.preventDefault();
                 setIsPages(!isPages);

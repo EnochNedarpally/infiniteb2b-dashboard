@@ -160,7 +160,7 @@ const AddCategory = () => {
                         required
                       />
                       <p className="text-muted mt-1">
-                        Please upload an image having size (400x500)
+                        Please upload an image having size (500x400)
                       </p>
                       {featuredImage && (
                         <div className="mt-2">

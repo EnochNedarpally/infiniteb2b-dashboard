@@ -259,6 +259,11 @@ const AllBlogs = () => {
         enableColumnFilter: false,
       },
       {
+        header: "Total Views",
+        accessorKey: "totalViews",
+        enableColumnFilter: false,
+      },
+      {
         header: "Action",
         cell: (cell) => {
           return (

@@ -68,7 +68,7 @@ const AllNewsLetters = () => {
         </div>,
         {
           position: "top-center",
-          autoClose: false, // Stay open until the user takes action
+          autoClose: false, 
           closeOnClick: false,
           draggable: false,
           pauseOnHover: false,

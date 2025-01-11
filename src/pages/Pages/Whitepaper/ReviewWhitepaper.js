@@ -145,6 +145,14 @@ const ReviewWhitepaper = () => {
         },
     });
 
+    const formatDate= (dateString)=>{
+        const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); 
+      const day = String(date.getDate()).padStart(2, '0'); 
+      return `${year}-${month}-${day}`;
+    }
+
     const columns = useMemo(
         () => [
             {
@@ -162,14 +170,9 @@ const ReviewWhitepaper = () => {
             },
             {
                 header: "WhitePapers Name",
-                accessorKey: "solutionSet.name",
+                accessorKey: "solutionSet.title",
                 enableColumnFilter: false,
             },
-
-
-
-
-
             {
                 header: "Category Name",
                 accessorKey: "categoryName",
@@ -177,14 +180,19 @@ const ReviewWhitepaper = () => {
             },
 
             {
-                header: "Total Views",
-                accessorKey: "totalViews",
+                header: "Published By",
+                accessorKey: "publishedBy",
                 enableColumnFilter: false,
             },
             {
-                header: "Total Downloads",
-                accessorKey: "totalDownloads",
+                header: "Published Date",
+                accessorKey: "publishedDate",
                 enableColumnFilter: false,
+                cell: ({ cell }) => {
+                    const rawDate = cell.getValue(); // Get the raw date value
+                    const formattedDate = rawDate.split("T")[0]; // Extract the date portion
+                    return formatDate(formattedDate);
+                },
             },
 
             {

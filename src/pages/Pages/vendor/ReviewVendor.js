@@ -45,7 +45,7 @@ import axios from "axios";
 const ReviewVendor = () => {
 
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
- 
+  const navigate = useNavigate()
   const [isEdit, setIsEdit] = useState(false);
   const [company, setCompany] = useState([]);
 
@@ -313,8 +313,18 @@ const ReviewVendor = () => {
         enableColumnFilter: false,
       },
       {
-        header: "Address",
-        accessorKey: "location",
+        header: "Country",
+        accessorKey: "country",
+        enableColumnFilter: false,
+      },
+      {
+        header: "Company",
+        accessorKey: "companyName",
+        enableColumnFilter: false,
+      },
+      {
+        header: "Designation",
+        accessorKey: "designation",
         enableColumnFilter: false,
       },
       {
@@ -322,113 +332,19 @@ const ReviewVendor = () => {
         accessorKey: "status", 
         enableColumnFilter: false,
       },
-// {
-//   header: "Status",
-//   accessorKey: "status",
-//   cell: ({ row }) => {
-//     const rowData = row.original; // Access the row data
-//     const vendorId = rowData.id; // Get the dynamic vendor ID
-//     const vendorName = rowData.name; // Optional: Use vendor name for better context
-// console.log("vendorId", vendorId)
-//     const handleApprove = async (id) => {
-//       // const token = JSON.parse(sessionStorage.getItem("authUser"))?.token;
-
-//       const config = {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//           "Content-Type": "multipart/form-data",
-//         },
-//       };
-
-//       const formData = new FormData();
-//       formData.append("vendorId", id);
-
-//       try {
-//         const response = await axios.put(
-//           "https://infiniteb2b.com:8443/admin/approve-vendor",
-//           formData,
-//           config
-//         );
-
-//         alert(`Vendor Approved: ${response.data.message}`);
-//         // Optionally refresh data here
-//       } catch (error) {
-//         console.error(
-//           "Error approving vendor:",
-//           error.response?.data || error.message
-//         );
-//         alert("Error approving vendor. Check the console for details.");
-//       }
-//     };
-
-//     const handleReject = async (id) => {
-//       const token = JSON.parse(sessionStorage.getItem("authUser"))?.token;
-
-//       const config = {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//           "Content-Type": "multipart/form-data",
-//         },
-//       };
-
-//       const formData = new FormData();
-//       formData.append("vendorId", id);
-
-//       try {
-//         const response = await axios.put(
-//           "https://infiniteb2b.com:8443/admin/reject-vendor",
-//           formData,
-//           config
-//         );
-
-//         alert(`Vendor Rejected: ${response.data.message}`);
-//         // Optionally refresh data here
-//       } catch (error) {
-//         console.error(
-//           "Error rejecting vendor:",
-//           error.response?.data || error.message
-//         );
-//         alert("Error rejecting vendor. Check the console for details.");
-//       }
-//     };
-
-//     return (
-//       <div>
-//         <button
-//           className="btn btn-sm btn-success"
-//           style={{ marginRight: "8px" }}
-//           onClick={() => handleApprove(vendorId)}
-//         >
-//           Approve
-//         </button>
-
-//         <button
-//           className="btn btn-sm btn-danger"
-//           style={{ marginRight: "8px" }}
-//           onClick={() => handleReject(vendorId)}
-//         >
-//           Reject
-//         </button>
-//       </div>
-//     );
-//   },
-//   enableColumnFilter: false,
-// },
-
       
 {
   header: "Action",
   cell: (cell) => {
     return (
       <ul className="list-inline hstack gap-2 mb-0">
-     
-        {/* <li className="list-inline-item" title="View">
-          <Link to="/view-category" 
-            onClick={() => { const companyData = cell.row.original; setInfo(companyData); }}
-          >
-            <i className="ri-eye-fill align-bottom text-muted"></i>
-          </Link>
-        </li> */}
+        <li className="list-inline-item" title="View">
+            <Link  to={{ pathname: "/admin/review-vendor/view", state: { data:"Vendor Data" } }}
+              // onClick={() => {console.log("clicked"); navigate("/admin/review-vendor/view") }}
+            >
+              <i className="ri-eye-fill align-bottom text-muted"></i>
+            </Link>
+        </li>
         <li className="list-inline-item" title="Edit">
           <Link className="edit-item-btn" to="#"
             // onClick={() => { const companyData = cell.row.original; handleCompanyClick(companyData); }}

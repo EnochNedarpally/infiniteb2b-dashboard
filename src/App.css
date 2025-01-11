@@ -55,6 +55,15 @@
 .confirm-btn:hover {
   background-color: #66bb6a;
 }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: '#555353'; 
+  border-radius: 10px; 
+  border: 2px solid #8e90ac7e; 
+}
 
 @keyframes App-logo-spin {
   from {

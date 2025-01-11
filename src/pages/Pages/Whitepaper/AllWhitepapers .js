@@ -391,6 +391,11 @@ const AllWhitepapers = () => {
           return formatDate(formattedDate);
         },
       },
+      {
+        header: "Published By",
+        accessorKey: "publishedBy",
+        enableColumnFilter: false,
+      },
       
       {
         header: "Action",
@@ -424,23 +429,61 @@ const AllWhitepapers = () => {
   const [info, setInfo] = useState([]);
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  const handleDelete = async()=>{
-      const formData = new FormData();
-      formData.append('solutionId', whitePaperData.id);
-      try {
-        const config = {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
-          }
-        };
-        await axios.put(`https://infiniteb2b.com:8443/admin/reject-solutionsets`, formData, config)
-        toast.success("Whitepaper Deleted")
-        fetchWhitepapers()
-        setModal(false)
-      } catch (error) {
-        toast.error(error)
+  const showConfirmToast = (itemId) => {
+    toast(
+      <div>
+        <h3>Are you sure you want to delete this item?</h3>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <button
+            onClick={() => handleCancel()}
+            className="cancel-btn"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => handleConfirm(itemId)}
+            className="confirm-btn"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
+        pauseOnHover: false,
+        closeButton: false,
       }
+    );
+  };
+  const handleDelete = () => {
+    showConfirmToast()
+  }
+  const handleCancel = () => {
+    toast.dismiss()
+  }
+  const handleConfirm = async () => {
+    const formData = new FormData();
+    formData.append('solutionId', whitePaperData.id);
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      await axios.put(`https://infiniteb2b.com:8443/admin/reject-solutionset`, formData, config)
+      toast.warn("Whitepaper Deleted")
+      fetchWhitepapers()
+      setModal(false)
+    } catch (error) {
+      toast.error(error)
+    } finally {
+      toast.dismiss()
+    }
+
   }
 
   document.title = "InfiniteB2B";
