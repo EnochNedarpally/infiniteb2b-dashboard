@@ -294,6 +294,8 @@ import DownloadedWhitepapers from "../pages/userModule/DownloadedWhitepapers";
 import ViewedWhitepapers from "../pages/userModule/ViewedWhitepaper";
 import ViewWhitepaper from "../pages/Pages/Whitepaper/ViewWhitepaper";
 import ViewVendor from "../pages/Pages/vendor/ViewVendor";
+import EditProfile from "../pages/vendorModule/Profile/EditProfile";
+import ViewUser from "../pages/Pages/user/admin/ViewUser";
 
 
 
@@ -363,6 +365,7 @@ const authProtectedRoutes = [
   { path: "/admin/user-addadmin", component: <AddAdmin/> },
   { path: "/admin/user-alladmin", component: <AllAdmin/> },
   { path: "/admin/user-allUsers", component: <AllUser/> },
+  { path: "/admin/user-viewUser", component: <ViewUser/> },
   { path: "/admin/user-addcampaign-managers", component: <AddCampaignManagers/> },
   { path: "/admin/user-allcampaign-managers", component: <AllCampaignManagers/> },
   { path: "/admin/user-addeditors", component: <AddEditors /> },
@@ -370,7 +373,7 @@ const authProtectedRoutes = [
 
   //Vendors
   { path: "/admin/review-vendor", component: <ReviewVendor/> },
-  { path: "/admin/review-vendor/view", component: <ViewVendor/> },
+  { path: "/admin/review-vendor/view", component: <EditProfile/> },
   { path: "/admin/all-vendors", component: <AllVendors/> },
  
 

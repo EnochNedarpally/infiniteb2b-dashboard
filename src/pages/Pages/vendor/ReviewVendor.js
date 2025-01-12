@@ -98,13 +98,11 @@ const ReviewVendor = () => {
   },[modal])
   const fetchCategories=async()=>{
     
-    // const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJTVVBFUkFETUlOIl0sInN1YiI6InN1cGVyYWRtaW5AZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMjg3MDQzMywiZXhwIjoxNzMzMjMwNDMzfQ.ne7d9Mseaabh-uNJEx7GOaa1Vd7G8JTLF8M45ZkDGKNm5N9u6IMSMMHvz5EdhYEJxljd1qCFjoXtUM42rlHmGQ"
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     };
-    // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
     const data = await axios.get("https://infiniteb2b.com:8443/admin/get-reviewvendor",config)
     setCategories(data.data)
     
@@ -272,7 +270,7 @@ const ReviewVendor = () => {
     setSelectedCheckBoxDelete(ele);
   };
 
-  
+ 
   // Column
   const columns = useMemo(
     () => [
@@ -339,14 +337,16 @@ const ReviewVendor = () => {
     return (
       <ul className="list-inline hstack gap-2 mb-0">
         <li className="list-inline-item" title="View">
-            <Link  to={{ pathname: "/admin/review-vendor/view", state: { data:"Vendor Data" } }}
-              // onClick={() => {console.log("clicked"); navigate("/admin/review-vendor/view") }}
+            <p 
+            className="cursor-pointer"
+            //  to={{ pathname: "/admin/review-vendor/view", states:data}}
+              onClick={() => { navigate("/admin/review-vendor/view",{ state: cell.row.original }) }}
             >
               <i className="ri-eye-fill align-bottom text-muted"></i>
-            </Link>
+            </p>
         </li>
         <li className="list-inline-item" title="Edit">
-          <Link className="edit-item-btn" to="#"
+          <p className="edit-item-btn" to="#"
             // onClick={() => { const companyData = cell.row.original; handleCompanyClick(companyData); }}
             onClick={() => {
               setModal(!modal)
@@ -354,7 +354,7 @@ const ReviewVendor = () => {
             }}
           >
             <i className="ri-pencil-fill align-bottom text-muted"></i>
-          </Link>
+          </p>
         </li>
      
       </ul>

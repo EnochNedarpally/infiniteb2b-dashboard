@@ -25,6 +25,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TableContainer from "../../../../Components/Common/TableContainer";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AllUser = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
@@ -32,6 +33,7 @@ const AllUser = () => {
   const [status, setStatus] = useState("1")
   const [modal, setModal] = useState(false)
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate()
   
   const toggle = useCallback(() => {
       if (modal) {
@@ -102,18 +104,18 @@ const AllUser = () => {
       },
 
       {
-        header: "Total Download Count",
+        header: "Download Count",
         accessorKey: "totalDownloadCount",
         enableColumnFilter: false,
       },
 
       {
-        header: "Total Save Count",
+        header: "Save Count",
         accessorKey: "totalSaveCount",
         enableColumnFilter: false,
       },
       {
-        header: "Total View Count",
+        header: "View Count",
         accessorKey: "totalViewCount",
         enableColumnFilter: false,
       },
@@ -130,7 +132,7 @@ const AllUser = () => {
         },
       },
       {
-        header: "Total Category Subscribed Count",
+        header: "Category Subscribed Count",
         accessorKey: "totalCategorySubscribedCount",
         enableColumnFilter: false,
       },
@@ -151,9 +153,12 @@ const AllUser = () => {
         accessorKey: "status", // Key for this column
         cell: (cell) => {
           return (
-            <div className="d-flex justify-content-center">
-              <button
-                className="btn btn-primary btn-sm me-2"
+            <div className="d-flex justify-content-center align-items-center ">
+              <div className="list-inline-item cursor-pointer " title="View" 
+              onClick={() => { navigate("/admin/user-viewUser", { state: {user:cell.row.original.user} }) }}>
+                  <i className="ri-eye-fill align-bottom text-muted"></i>
+              </div>
+              <div className="list-inline-item" title="Edit"
                 onClick={() => {
                   setModal(!modal)
                   setUserId(cell.row.original.user.id)
@@ -161,8 +166,8 @@ const AllUser = () => {
                 }}
 
               >
-                Edit
-              </button>
+                <i className="ri-pencil-fill align-bottom text-muted"></i>
+              </div>
             </div>
           );
         },

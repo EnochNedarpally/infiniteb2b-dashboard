@@ -1,10 +1,44 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Card, CardBody, Col, Container, Row } from 'reactstrap'
+import EditProfile from './EditProfile'
+import axios from 'axios'
 
 const VendorProfile = () => {
+  const [vendor, setVendor] = useState({})
+  const vendorData = JSON.parse(sessionStorage.getItem("authUser")) ?? null;
+
+  useEffect(() => {
+    fetchVendor()
+  }, [])
+
+  const fetchVendor = async () => {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${vendorData.token}`
+      }
+    };
+    const data = await axios.get(`https://infiniteb2b.com:8443/api/vendor/by-id/${vendorData.data._id}`, config)
+    setVendor(data.data)
+
+  }
   return (
-    <div className="d-flex " style={{ marginTop: '70px' }}>
-      VendorProfile
-    </div>
+    <React.Fragment>
+      <div>
+        <Container fluid>
+          <Row>
+            <Col xxl={12}>
+              <Card
+              >
+                <CardBody className="pt-0 ">
+                  <EditProfile isEdit={true} vendorDetail={vendor} />
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </React.Fragment>
   )
 }
 
