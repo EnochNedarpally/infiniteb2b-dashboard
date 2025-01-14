@@ -28,21 +28,16 @@ const ViewUser = () => {
         };
 
         try {
-            const response1 = axios.get('https://infiniteb2b.com:8443/api/user/view-all-saved', formData, config);
-            const response2 = axios.get('https://infiniteb2b.com:8443/api/user/view-all-downloaded', formData, config);
-            const response3 = axios.get('https://infiniteb2b.com:8443/api/user/view-all-viewed', formData, config);
-
-            const results = await Promise.all([response1, response2, response3]);
-
-            setSavedWhitepaper(results[0].data);
-            setDowndloadedWhitepaper(results[1].data);
-            setViewedWhitepaper(results[2].data);
+            const response = await axios.get(`https://infiniteb2b.com:8443/view-all-downloaded-by-userid?id=${userDetail?.id}`, formData, config);
+            setSavedWhitepaper(response.data.allSaved);
+            setDowndloadedWhitepaper(response?.data.allDownloaded);
+            setViewedWhitepaper(response?.data.allViewed);
         } catch (err) {
-            toast.error("Something went wrong, Please try again later...")
+            toast.error("Something went wrong, Please try again later...",err)
         }
     }
 
-    const savedColumns = useMemo(
+    const columns = useMemo(
         () => [
             {
                 header: "No.",
@@ -58,88 +53,18 @@ const ViewUser = () => {
 
             },
             {
-                header: "Name",
-                accessorKey: "user.name",
+                header: "Title",
+                accessorKey: "title",
                 enableColumnFilter: false,
             },
 
             {
-                header: "Download Count",
-                accessorKey: "totalDownloadCount",
+                header: "description",
+                accessorKey: "description",
                 enableColumnFilter: false,
             },
-
-            {
-                header: "Save Count",
-                accessorKey: "totalSaveCount",
-                enableColumnFilter: false,
-            },
-            {
-                header: "View Count",
-                accessorKey: "totalViewCount",
-                enableColumnFilter: false,
-            },
-            {
-                header: "News Letters Subscribed",
-                accessorKey: "newsLetterSubscribed",
-                enableColumnFilter: false,
-                cell: (cell) => {
-                    return (
-                        <div className="d-flex justify-content-center">
-                            {cell.row.original.newsLetterSubscribed == "0" ? "No" : "Yes"}
-                        </div>
-                    );
-                },
-            },
-            {
-                header: "Category Subscribed Count",
-                accessorKey: "totalCategorySubscribedCount",
-                enableColumnFilter: false,
-            },
-            {
-                header: "Status",
-                accessorKey: "user.status",
-                enableColumnFilter: false,
-                cell: (cell) => {
-                    return (
-                        <div className="d-flex justify-content-center">
-                            {cell.row.original.user.status ?? "Hold"}
-                        </div>
-                    );
-                },
-            },
-            {
-                header: () => <div className="text-center">Action</div>, // Centered header
-                accessorKey: "status", // Key for this column
-                cell: (cell) => {
-                    return (
-                        <div className="d-flex justify-content-center align-items-center ">
-                            <div className="list-inline-item " title="View">
-                                <p
-                                    className="cursor-pointer"
-                                    //  to={{ pathname: "/admin/review-vendor/view", states:data}}
-                                    onClick={() => { navigate("/admin/user-viewUser", { state: { user: cell.row.original.user } }) }}
-                                >
-                                    <i className="ri-eye-fill align-bottom text-muted"></i>
-                                </p>
-                            </div>
-                            <div className="list-inline-item" title="Edit"
-                                onClick={() => {
-                                    setModal(!modal)
-                                    setUserId(cell.row.original.user.id)
-                                    setStatus(cell.row.original.user.status == "ACTIVE" ? "1" : "2")
-                                }}
-
-                            >
-                                <i className="ri-pencil-fill align-bottom text-muted"></i>
-                            </div>
-                        </div>
-                    );
-                },
-                enableColumnFilter: false,
-            }
         ],
-        []
+        [savedWhitepaper,downdloadedWhitepaper,ViewedWhitepaper]
     );
     return (
         <>
@@ -148,16 +73,31 @@ const ViewUser = () => {
                     <ToastContainer />
                     <Row>
                         <Col xxl={12}>
+                        <Card>
+                                <CardBody>
+                                    <CardHeader>
+                                        <h6 className="card-title p-0 mb-2">Viewed Whitepapers</h6>
+                                    </CardHeader>
+                                    <TableContainer columns={columns}
+                                        data={(ViewedWhitepaper ?? [])}
+                                        isGlobalFilter={false}
+                                        isAddUserList={false}
+                                        customPageSize={10}
+                                        className="custom-header-css"
+                                        divClass="table-responsive table-card mb-2"
+                                        tableClass="align-middle table-nowrap"
+                                        theadClass="table-light" />
+                                </CardBody>
+                            </Card>
                             <Card
                             >
-
                                 <CardBody className="mt-2 ">
                                     <CardHeader>
-                                        <h6 className="card-title mb-0">Saved Whitepapers</h6>
+                                        <h6 className="card-title p-0 mb-2">Saved Whitepapers</h6>
                                     </CardHeader>
                                     <TableContainer
-                                        columns={savedColumns}
-                                        data={(users ?? [])}
+                                        columns={columns}
+                                        data={(savedWhitepaper ?? [])}
                                         isGlobalFilter={false}
                                         isAddUserList={false}
                                         customPageSize={10}
@@ -171,10 +111,10 @@ const ViewUser = () => {
                             <Card>
                                 <CardBody>
                                     <CardHeader>
-                                        <h6 className="card-title mb-0">Downloaded Whitepapers</h6>
+                                        <h6 className="card-title p-0 mb-2">Downloaded Whitepapers</h6>
                                     </CardHeader>
-                                    <TableContainer columns={savedColumns}
-                                        data={(users ?? [])}
+                                    <TableContainer columns={columns}
+                                        data={(downdloadedWhitepaper ?? [])}
                                         isGlobalFilter={false}
                                         isAddUserList={false}
                                         customPageSize={10}
@@ -183,22 +123,6 @@ const ViewUser = () => {
                                         tableClass="align-middle table-nowrap"
                                         theadClass="table-light" />
                                     <CardFooter />
-                                </CardBody>
-                            </Card>
-                            <Card>
-                                <CardBody>
-                                    <CardHeader>
-                                        <h6 className="card-title mb-0">Viewed Whitepapers</h6>
-                                    </CardHeader>
-                                    <TableContainer columns={savedColumns}
-                                        data={(users ?? [])}
-                                        isGlobalFilter={false}
-                                        isAddUserList={false}
-                                        customPageSize={10}
-                                        className="custom-header-css"
-                                        divClass="table-responsive table-card mb-2"
-                                        tableClass="align-middle table-nowrap"
-                                        theadClass="table-light" />
                                 </CardBody>
                             </Card>
                         </Col>

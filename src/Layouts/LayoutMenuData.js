@@ -559,8 +559,8 @@ const Navdata = () => {
                   
                 },
                 { id: "Newsletter report", label: "Newsletter reports", link: "/newsletter-reports", parentId: "charts" },
-                { id: "Subscriber report", label: "Subscriber reports", link: "/subscriber-reports", parentId: "charts" },
-                { id: "Download report", label: "Download reports", link: "/download-reports", parentId: "charts" },
+                { id: "Category report", label: "Category report", link: "/category-reports", parentId: "charts" },
+                { id: "Whitepaper report", label: "Whitepaper report", link: "/whitepaper-reports", parentId: "charts" },
 
             ],
         },

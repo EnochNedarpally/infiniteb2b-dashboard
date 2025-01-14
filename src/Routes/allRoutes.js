@@ -296,6 +296,10 @@ import ViewWhitepaper from "../pages/Pages/Whitepaper/ViewWhitepaper";
 import ViewVendor from "../pages/Pages/vendor/ViewVendor";
 import EditProfile from "../pages/vendorModule/Profile/EditProfile";
 import ViewUser from "../pages/Pages/user/admin/ViewUser";
+import CategoryReport from "../pages/Pages/report/CategoryReport";
+import CategoryReportById from "../pages/Pages/report/CategoryReportById";
+import WhitepaperReport from "../pages/Pages/report/WhitepaperReport";
+import WhitepaperReportById from "../pages/Pages/report/WhitepaperReportById";
 
 
 
@@ -357,7 +361,10 @@ const authProtectedRoutes = [
   //report
   { path: "/campaign-reports", component: <CampaignReports/> },
   { path: "/newsletter-reports", component: <NewsletterReports/> },
-  { path: "/subscriber-reports", component: <SubscriberReports /> },
+  { path: "/category-reports", component: <CategoryReport/> },
+  { path: "/category-reports/:id", component: <CategoryReportById/> },
+  { path: "/whitepaper-reports", component: <WhitepaperReport/> },
+  { path: "/whitepaper-reports/:id", component: <WhitepaperReportById/> },
   { path: "download-reports", component: <DownloadReports/> },
 
   

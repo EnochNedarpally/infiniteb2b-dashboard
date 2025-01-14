@@ -104,7 +104,8 @@ const TableContainer = ({
   thClass,
   divClass,
   SearchPlaceholder,
-
+  downloadReport,
+  isExport
 }) => {
   const [columnFilters, setColumnFilters] = useState ([]);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -170,8 +171,8 @@ const TableContainer = ({
       {isGlobalFilter && <Row className="mb-3">
         <CardBody className="border border-dashed border-end-0 border-start-0">
           <form>
-            <Row>
-              <Col sm={5}>
+            <Col lg={12} className="d-flex justify-content-between align-items-center">
+              <div lg={5}>
                 <div className={(isProductsFilter || isContactsFilter || isCompaniesFilter || isNFTRankingFilter) ? "search-box me-2 mb-2 d-inline-block" : "search-box me-2 mb-2 d-inline-block col-12"}>
                   <DebouncedInput
                     value={globalFilter ?? ''}
@@ -180,7 +181,9 @@ const TableContainer = ({
                   />
                   <i className="bx bx-search-alt search-icon"></i>
                 </div>
-              </Col>
+              </div>
+             {isExport && <div lg={5}><button className="page-link border p-2 border-2 text-primary" onClick={(e)=>{e.preventDefault();downloadReport()}} >Export</button></div>}
+              
               {isProductsFilter && (
                 <ProductsGlobalFilter />
               )}
@@ -214,7 +217,7 @@ const TableContainer = ({
               {isTaskListFilter && (
                 <TaskListGlobalFilter />
               )}
-            </Row>
+            </Col>
           </form>
         </CardBody>
       </Row>}
