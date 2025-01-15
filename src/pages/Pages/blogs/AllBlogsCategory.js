@@ -46,7 +46,6 @@ const AllBlogsCategory = () => {
   const toggle = useCallback(() => {
     if (modal) {
       setModal(false);
-      setCompany(null);
       setCategory({})
     } else {
       setModal(true);
@@ -81,7 +80,6 @@ const AllBlogsCategory = () => {
     setIsEdit(true);
     toggle();
   }, [toggle]);
-
   const [categories, setCategories] = useState([]);
 
   const handleSubmit = async (event) => {
@@ -262,7 +260,7 @@ const AllBlogsCategory = () => {
                                     id="name"
                                     name="name"
                                     className="form-control"
-                                    value={category?.name ?? categoryData?.name}
+                                    value={category?.name ?? categoryData?.blogCategoryName}
                                     onChange={(e) => handleInputChange(e.target)}
                                     required
                                   />
@@ -276,7 +274,7 @@ const AllBlogsCategory = () => {
                                     id="desc"
                                     name="desc"
                                     className="form-control"
-                                    value={category?.desc ?? categoryData.descp}
+                                    value={category?.desc ?? categoryData.blogCategoryDescp}
                                     onChange={(e) => handleInputChange(e.target)}
 
                                   />
