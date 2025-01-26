@@ -379,7 +379,7 @@ const AllBlogs = () => {
                                           key={item.id}
                                           onMouseDown={(e) => {
                                             e.preventDefault();
-                                            setCategory(item.name);
+                                            setCategory(item.blogCategoryName);
                                             setBlog(prev => ({ ...prev, blogsCategoryId: item.id }));
                                             setIsModified(true)
                                             setIsFocused(false);
@@ -397,7 +397,7 @@ const AllBlogs = () => {
                                   )}
                                 </div>
                                   <p className="form-label mt-2">
-                                    <strong>Selected Category:</strong> {category ? category.blogCategoryName : blogData.category}
+                                    <strong>Selected Category:</strong> {category ? category : blogData.category}
                                   </p>
                                 <div className="mb-3">
                                   <label htmlFor="image" className="form-label">
@@ -410,10 +410,10 @@ const AllBlogs = () => {
                                     className="form-control"
                                     onChange={(e) => handleImageChange(e.target.files)}
                                   />
-                                  {blogData?.imageContent && (
+                                  {(Blog?.image?.name || blogData?.imageContent) && (
                                     <div className="mt-2">
-                                      <img src={blogData?.imageContent} alt="Blog preview"
-                                      style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }}/>
+                                     { Blog?.image?.name ?<p>{Blog?.image?.name}</p> :<img src={blogData?.imageContent} alt="Blog preview"
+                                      style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }}/>}
                                     </div>
                                   )}
                                 </div>

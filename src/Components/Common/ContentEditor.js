@@ -65,7 +65,7 @@ const saveToServer = async (file) => {
     if (quill) {
       if (content) {
         try {
-          quill.clipboard.dangerouslyPasteHTML(JSON.parse(content));
+          quill.clipboard.dangerouslyPasteHTML(content);
         } catch (error) {
           return
         }
@@ -78,7 +78,7 @@ const saveToServer = async (file) => {
   return (
     <div style={{width: 600, height: 320, border: '1px solid lightgray',border:"none",marginBottom:10 }}>
       <ToastContainer/>
-      <div ref={quillRef}  onBlur={()=>setContent(JSON.stringify(quill?.root?.innerHTML))}/>
+      <div ref={quillRef}  onBlur={()=>setContent(quill?.root?.innerHTML)}/>
     </div>
   );
 };

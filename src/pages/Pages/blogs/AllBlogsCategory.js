@@ -83,51 +83,49 @@ const AllBlogsCategory = () => {
   const [categories, setCategories] = useState([]);
 
   const handleSubmit = async (event) => {
-    // event.preventDefault();
-    // const formData = new FormData();
-    // formData.append("id",categoryData.id)
-    // Object.keys(category).map((key) => {
-    //   if (key) {
-    //     let value = category[key];
-    //     if (value instanceof Blob) {
-    //       formData.append(key, value);
-    //     } else {
-    //       value = typeof value === 'object' ? JSON.stringify(value) : value;
-    //       formData.append(key, value);
-    //     }
-    //   }
-    // });
+    event.preventDefault();
+    const formData = new FormData();
+    Object.keys(category).map((key) => {
+      if (key) {
+        let value = category[key];
+        if (value instanceof Blob) {
+          formData.append(key, value);
+        } else {
+          value = typeof value === 'object' ? JSON.stringify(value) : value;
+          formData.append(key, value);
+        }
+      }
+    });
 
-    // setLoading(true);
+    setLoading(true);
 
-    // try {
-    //   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    //   const response = await axios.post(
-    //     'https://infiniteb2b.com:8443/api/category/update',
-    //     formData,
-    //     {
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data',
-    //         'Authorization': `Bearer ${token}`,
-    //       },
-    //     }
-    //   );
-    //   if (response.status) {
+    try {
+      const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
+      const response = await axios.put(
+        `https://infiniteb2b.com:8443/api/blogs/update-blogs-category/${categoryData.id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status) {
 
-    //     setCategory({});
-    //     setFeaturedImagePreview(null)
-    //     setIsModified(false)
-    //     toast.success("Category Updated")
-    //     fetchCategories()
-    //     toggle()
+        setCategory({});
+        setIsModified(false)
+        toast.success("Category Updated")
+        fetchCategories()
+        toggle()
 
-    //   }
-    // } catch (err) {
-    //   toast.error(err?.response?.data?.message ?? 'Error uploading file')
-    //   console.log(err, "err")
-    // } finally {
-    //   setLoading(false);
-    // }
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message ?? 'Error uploading file')
+      console.log(err, "err")
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Column
@@ -272,9 +270,9 @@ const AllBlogsCategory = () => {
                                   </label>
                                   <textarea
                                     id="desc"
-                                    name="desc"
+                                    name="blogCategoryDescp"
                                     className="form-control"
-                                    value={category?.desc ?? categoryData.blogCategoryDescp}
+                                    value={category?.blogCategoryDescp ?? categoryData.blogCategoryDescp}
                                     onChange={(e) => handleInputChange(e.target)}
 
                                   />
