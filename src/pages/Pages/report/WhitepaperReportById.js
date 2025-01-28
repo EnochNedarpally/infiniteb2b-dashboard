@@ -72,6 +72,11 @@ const WhitepaperReportById = () => {
         enableColumnFilter: false,
       },
       {
+        header: "Saved Date",
+        accessorKey: "savedAt",
+        enableColumnFilter: false,
+      },
+      {
         header: "Save",
         accessorKey: "save",
         enableColumnFilter: false,
@@ -92,7 +97,7 @@ const WhitepaperReportById = () => {
         enableColumnFilter: false,
       },
     ],
-    []
+    [reports]
   );
 
   useEffect(() => {
