@@ -97,7 +97,14 @@ const AddNewsLetters = () => {
                       <label htmlFor="desc" className="form-label">
                       Newsletter Content:
                       </label>
-                      <ContentEditor  setContent={setNewsletterContent}/>
+                      <textarea
+                       type="text"
+                       rows={5}
+                       id="content"
+                       className="form-control"
+                       value={newsletterContent}
+                       onChange={(e) => setNewsletterContent(e.target.value)}
+                       required/>
                     </div>
                     <div className="mb-3">
                       <label htmlFor="image" className="form-label">

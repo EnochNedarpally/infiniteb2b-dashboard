@@ -378,7 +378,18 @@ useEffect(()=>{
                                     onChange={(e) => handleNewsLetterChange(e.target)}
                                   />
                                 </div>
-                                  <ContentEditor content={NewsLetter?.content ?? NewsLetterData.content} setContent={setNewsletterContent}/>
+                                <label htmlFor="name" className="form-label">
+                                    NewsLetter Content
+                                  </label>
+                                  <textarea
+                                    type="text"
+                                    id="content"
+                                    name="content"
+                                    rows={5}
+                                    className="form-control"
+                                    value={NewsLetter?.content ?? NewsLetterData.content}
+                                    onChange={(e) => handleNewsLetterChange(e.target)}
+                                  />
                                 <div className="mb-3">
                                   <label htmlFor="image" className="form-label">
                                     Featured Image:
