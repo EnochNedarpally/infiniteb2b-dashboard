@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardBody, Col } from 'reactstrap';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { api } from "../../config";
 
 const UserWidget = () => {
   const [userWidgets, setUserWidgets] = useState([]);
@@ -22,7 +23,7 @@ const UserWidget = () => {
     
         try {
           const data = await axios.get(
-            `https://infiniteb2b.com:8443/api/user/dashboard`,
+            `${api.API_URL}/api/user/dashboard`,
             config
           );
           const widgetsData = data.ecomWidgets; 

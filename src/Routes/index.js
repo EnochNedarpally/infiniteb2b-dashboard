@@ -14,7 +14,7 @@ const authUserData = JSON.parse(sessionStorage.getItem("authUser"));
 const [privateRoutes, setPrivateRoutes] = useState(authProtectedRoutes)
 const navigate = useNavigate()
 
-document.title = "InfiniteB2B"
+document.title = "Infeedu"
 useEffect(()=>{
     if(authUserData){
     const routeData = getURL(authUserData.data.role)

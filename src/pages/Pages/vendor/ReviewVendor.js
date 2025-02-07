@@ -41,6 +41,7 @@ import ExportCSVModal from "../../../Components/Common/ExportCSVModal";
 import Loader from "../../../Components/Common/Loader";
 import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
+import { api } from "../../../config";
 
 const ReviewVendor = () => {
 
@@ -103,7 +104,7 @@ const ReviewVendor = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    const data = await axios.get("https://infiniteb2b.com:8443/admin/get-reviewvendor",config)
+    const data = await axios.get(`${api.API_URL}/admin/get-reviewvendor`,config)
     setCategories(data.data)
     
   }
@@ -223,8 +224,7 @@ const ReviewVendor = () => {
           'Authorization': `Bearer ${token}`
         }
       };
-      await axios.put(`https://infiniteb2b.com:8443/admin/${API_ENDPOINT}`, formData, config)
-      // const data = await axios.get("https://infiniteb2b.com:8443/admin/get-reviewvendor",config)
+      await axios.put(`${api.API_URL}/admin/${API_ENDPOINT}`, formData, config)
       setModal(false)
     } catch (error) {
       console.log(error)
@@ -371,7 +371,7 @@ const ReviewVendor = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

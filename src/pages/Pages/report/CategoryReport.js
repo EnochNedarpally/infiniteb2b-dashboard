@@ -5,6 +5,7 @@ import { Card, CardBody, CardHeader, Col, Container, Row } from 'reactstrap'
 import TableContainer from '../../../Components/Common/TableContainer';
 import { Link, useNavigate } from 'react-router-dom';
 import { downloadReport } from '../../../helpers/api_utils';
+import { api } from '../../../config';
 
 const CategoryReport = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
@@ -91,7 +92,7 @@ const CategoryReport = () => {
       }
     };
     try {
-      const data = await axios.get("https://infiniteb2b.com:8443/admin/category-report", config)
+      const data = await axios.get(`${api.API_URL}/admin/category-report`, config)
       setReports(data.categories)
     } catch (error) {
       toast.error("Unable to fetch reports")
@@ -122,7 +123,7 @@ const CategoryReport = () => {
                   theadClass="table-light"
                   SearchPlaceholder='Search for Category...'
                   isExport={true}
-                  downloadReport={() => downloadReport(token, "https://infiniteb2b.com:8443/admin/category-download-csv", "categories.csv")}
+                  downloadReport={() => downloadReport(token, `${api.API_URL}/admin/category-download-csv`, "categories.csv")}
                 />
               </CardBody>
             </Card>

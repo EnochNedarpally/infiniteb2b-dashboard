@@ -40,6 +40,7 @@ import Loader from "../../Components/Common/Loader";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import axios from "axios";
 import TableContainer from "../../Components/Common/TableContainer";
+import { api } from "../../config";
 
 const CategorySubsciber = () => {
 
@@ -105,8 +106,7 @@ const CategorySubsciber = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
-    const data = await axios.get("https://infiniteb2b.com:8443/api/user/getall-favortie-category",config)
+    const data = await axios.get(`${api.API_URL}/api/user/getall-favortie-category`,config)
     // console.log("data", data)
     setCategories(data.data)
     
@@ -335,7 +335,7 @@ const CategorySubsciber = () => {
       
             try {
               const response = await axios.put(
-                "https://infiniteb2b.com:8443/api/user/remove-favorite",
+                `${api.API_URL}/api/user/remove-favorite`,
                 formData,
                 config
               );
@@ -379,7 +379,7 @@ const CategorySubsciber = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

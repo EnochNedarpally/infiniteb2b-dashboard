@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import axios from 'axios';
+import { api } from '../../../config';
 
 const AddWhitepapers = () => {
   const [file, setFile] = useState(null);
@@ -31,7 +32,7 @@ const AddWhitepapers = () => {
   }, []);
   const fetchRandomRecords = async () => {
     try {
-      const response = await axios.get('https://infiniteb2b.com:8443/api/category');
+      const response = await axios.get(`${api.API_URL}/api/category`);
       setOptions(response.data.data.slice(0, 10).map(item => item.name))
     } catch (error) {
       console.error('Error fetching random records:', error);
@@ -59,7 +60,7 @@ const AddWhitepapers = () => {
     }
     try {
 
-      const res = await axios.get(`https://infiniteb2b.com:8443/api/category?name=${query}`, config)
+      const res = await axios.get(`${api.API_URL}/api/category?name=${query}`, config)
       // console.log("res.data", res.data)
       setOptions(res.data.slice(0, 10).map(item => item.name));
     } catch (error) {

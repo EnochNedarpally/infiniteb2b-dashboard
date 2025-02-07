@@ -23,6 +23,7 @@ import { useFormik } from "formik";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+import { api } from "../../../config";
 
 const ReviewWhitepaper = () => {
     const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
@@ -45,7 +46,7 @@ const ReviewWhitepaper = () => {
               'Authorization': `Bearer ${token}`
             }
           };
-          await axios.put(`https://infiniteb2b.com:8443/admin/${API_ENDPOINT}`, formData, config)
+          await axios.put(`${api.API_URL}/admin/${API_ENDPOINT}`, formData, config)
           fetchWhitepapers()
           setModal(false)
         } catch (error) {
@@ -71,7 +72,7 @@ const ReviewWhitepaper = () => {
             },
         };
         try {
-            const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allwhitepapers?value=2", config)
+            const data = await axios.get(`${api.API_URL}/admin/get-allwhitepapers?value=2`, config)
             setCategories(data.data.whitepapers)
         } catch (error) {
             console.log("Whitepaper error", error)
@@ -230,7 +231,7 @@ const ReviewWhitepaper = () => {
     );
 
 
-    document.title = "InfiniteB2B";
+    document.title = "Infeedu";
     return (
         <React.Fragment>
             <div className="page-content">

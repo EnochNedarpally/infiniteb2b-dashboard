@@ -14,6 +14,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TableContainer from "../../Components/Common/TableContainer";
 import axios from "axios";
+import { api } from "../../config";
 
 const DownloadedWhitepapers = () => {
   const userDetails = JSON.parse(sessionStorage.getItem("authUser")).data ?? null;
@@ -27,7 +28,7 @@ const DownloadedWhitepapers = () => {
         'Authorization': `Bearer ${userDetails.jwtToken}`
       }
     };
-    const data = await axios.get(`https://infiniteb2b.com:8443/api/user/view-all-downloaded?id=${userDetails.id}`, config)
+    const data = await axios.get(`${api.API_URL}/api/user/view-all-downloaded?id=${userDetails.id}`, config)
     setWhitepapers(data.data.allDownloaded)
   }
 
@@ -62,7 +63,7 @@ const DownloadedWhitepapers = () => {
     []
   );
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
       <div className="page-content">

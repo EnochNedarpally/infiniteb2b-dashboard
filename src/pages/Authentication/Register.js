@@ -109,7 +109,7 @@ delete payload.confirm_password
     toggleModal();
   };
 
-    document.title = "InfiniteB2B";
+    document.title = "Infeedu";
     return (
         <React.Fragment>
             <ParticlesAuth>
@@ -118,10 +118,10 @@ delete payload.confirm_password
                         <Row>
                              <ToastContainer closeButton={false} limit={1} />
                             <Col lg={12}>
-                                <div className="text-center mt-sm-5 mb-4 text-white-50">
+                                <div className="text-center  mb-4 text-white-50">
                                     <div>
                                         <Link to="/" className="d-inline-block auth-logo">
-                                            <img src={logoLight} style={{objectFit:'cover'}} alt="" width="450" height="80" />
+                                            <img src={logoLight} style={{objectFit:'cover'}} alt="" width="450"/>
                                         </Link>
                                     </div>
                                 </div>

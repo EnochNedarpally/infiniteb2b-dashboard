@@ -29,6 +29,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { mediaBaseURL } from "../../../helpers/api_helper";
+import { api } from "../../../config";
 
 const VendorAllWhitepapers = () => {
 
@@ -93,14 +94,14 @@ const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
         'Authorization': `Bearer ${token}`
       }
     };
-    const data = await axios.get(`https://infiniteb2b.com:8443/api/vendor/get-allwhitepapers?status=${queryParams ?? ""}`,config)
+    const data = await axios.get(`${api.API_URL}/api/vendor/get-allwhitepapers?status=${queryParams ?? ""}`,config)
     setWhitepapers(data.data)
     
   }
 
   const fetchRandomRecords = async () => {
     try {
-      const response = await axios.get('https://infiniteb2b.com:8443/api/category',config);
+      const response = await axios.get(`${api.API_URL}/api/category`,config);
       setOptions(response.data.slice(0, 10).map(item => item.name))
     } catch (error) {
       console.error('Error fetching random records:', error);
@@ -113,7 +114,7 @@ const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
     }
     try {
 
-      const res = await axios.get(`https://infiniteb2b.com:8443/api/category?name=${query}`, config)
+      const res = await axios.get(`${api.API_URL}/api/category?name=${query}`, config)
       setOptions(res.data.slice(0, 10).map(item => item.name));
     } catch (error) {
       console.error('Error fetching search results:', error);
@@ -156,7 +157,7 @@ const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
     try {
       const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/vendor/update-solutionset',
+        `${api.API_URL}/api/vendor/update-solutionset`,
         formData,
         {
           headers: {
@@ -375,7 +376,7 @@ const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
     [handleCompanyClick]
   );
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

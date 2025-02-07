@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader, Label } from 'reactstrap';
 import axios from 'axios';
+import { api } from '../../../../config';
 
 const AddEditors = () => {
   const [name, setName] = useState('');
@@ -37,7 +38,7 @@ const AddEditors = () => {
 
     try {
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/register/admin',
+        `${api.API_URL}/register/admin`,
         formData,
         {
           headers: {

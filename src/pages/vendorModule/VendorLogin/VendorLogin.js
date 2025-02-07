@@ -23,6 +23,7 @@ import logoLight from "../../../assets/images/Infinite-b2b-1-scaled.png";
 import ParticlesAuth from "../../AuthenticationInner/ParticlesAuth";
 import withRouter from "../../../Components/Common/withRouter";
 import { toast, ToastContainer } from "react-toastify";
+import { api } from "../../../config";
 
 const VendorLogin = (props) => {
   const [passwordShow, setPasswordShow] = useState(false);
@@ -55,7 +56,7 @@ const VendorLogin = (props) => {
         }
 
         const response = await axios.post(
-          "https://infiniteb2b.com:8443/api/vendor/login",
+          `${api.API_URL}/api/vendor/login`,
           formData,
           {
             headers: {
@@ -103,10 +104,10 @@ const VendorLogin = (props) => {
           <Container>
             <Row>
               <Col lg={12}>
-                <div className="text-center mt-sm-5 mb-4 text-white-50">
+                <div className="text-center mb-4 text-white-50">
                   <div>
                     <Link to="/" className="d-inline-block auth-logo">
-                      <img src={logoLight} style={{objectFit:'cover'}} alt="" width="450" height="80" />
+                      <img src={logoLight} style={{objectFit:'cover'}} alt="" width="450" />
                     </Link>
                   </div>
                   <p className="mt-3 fs-15 fw-medium">Vendor Dashboard</p>

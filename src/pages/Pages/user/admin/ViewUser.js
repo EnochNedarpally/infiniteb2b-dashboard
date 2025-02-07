@@ -4,6 +4,7 @@ import { Card, CardBody, CardFooter, CardHeader, Col, Container, Row } from 'rea
 import TableContainer from '../../../../Components/Common/TableContainer'
 import { toast, ToastContainer } from 'react-toastify'
 import axios from 'axios'
+import { api } from '../../../../config'
 
 const ViewUser = () => {
     const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
@@ -28,7 +29,7 @@ const ViewUser = () => {
         };
 
         try {
-            const response = await axios.get(`https://infiniteb2b.com:8443/view-all-downloaded-by-userid?id=${userDetail?.id}`, formData, config);
+            const response = await axios.get(`${api.API_URL}/view-all-downloaded-by-userid?id=${userDetail?.id}`, formData, config);
             setSavedWhitepaper(response.data.allSaved);
             setDowndloadedWhitepaper(response?.data.allDownloaded);
             setViewedWhitepaper(response?.data.allViewed);

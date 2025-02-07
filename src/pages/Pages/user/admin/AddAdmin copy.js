@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import axios from 'axios';
+import { api } from '../../../../config';
 
 const AddAdmin = () => {
   const [name, setName] = useState('');
@@ -33,7 +34,7 @@ const AddAdmin = () => {
 
     try {
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/vendor/add-admin',
+        `${api.API_URL}/api/vendor/add-admin`,
         formData,
         {
           headers: {

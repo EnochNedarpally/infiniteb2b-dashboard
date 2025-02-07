@@ -4,6 +4,7 @@ import { Card, CardBody, CardHeader, Col, Container, Form, Input, Label, Nav, Na
 import Flatpickr from "react-flatpickr";
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
+import { api } from '../../../config';
 
 const EditProfile = ({ vendorDetail, isEdit }) => {
     const location = useLocation()
@@ -39,7 +40,7 @@ const EditProfile = ({ vendorDetail, isEdit }) => {
 
         try {
             const response = await axios.post(
-                'https://infiniteb2b.com:8443/api/vendor/update-details',
+                `${api.API_URL}/api/vendor/update-details`,
                 formData,
                 {
                     headers: {

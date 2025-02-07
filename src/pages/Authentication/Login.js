@@ -102,7 +102,7 @@ const Login = (props) => {
     // }, [dispatch, errorMsg]);
     // console.log("errorMsg",errorMsg)
 
-    document.title = "InfiniteB2B";
+    document.title = "Infeedu";
     return (
         <React.Fragment>
             <ParticlesAuth>
@@ -110,10 +110,10 @@ const Login = (props) => {
                     <Container>
                         <Row>
                             <Col lg={12}>
-                                <div className="text-center mt-sm-5 mb-4 text-white-50">
+                                <div className="text-center mb-4 text-white-50">
                                     <div>
                                         <Link to="/" className="d-inline-block auth-logo">
-                                            <img src={logoLight} style={{objectFit:'cover'}} alt="" width="450" height="80" />
+                                            <img src={logoLight} style={{objectFit:'cover'}} alt="" width="450" />
                                         </Link>
                                     </div>
                                     <p className="mt-3 fs-15 fw-medium">Admin & Dashboard</p>

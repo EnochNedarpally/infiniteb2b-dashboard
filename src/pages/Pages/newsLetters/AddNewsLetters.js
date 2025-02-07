@@ -6,6 +6,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import ContentEditor from '../../../Components/Common/ContentEditor';
+import { api } from '../../../config';
 
 const AddNewsLetters = () => {
   const [title, setTitle] = useState('');
@@ -40,7 +41,7 @@ const AddNewsLetters = () => {
 
     try {
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/newsletter/add-newsletter',
+        `${api.API_URL}/api/newsletter/add-newsletter`,
         
         formData,
         {

@@ -5,6 +5,7 @@ import { Card, CardBody, CardHeader, Col, Container, Row } from 'reactstrap'
 import TableContainer from '../../../Components/Common/TableContainer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { downloadReport } from '../../../helpers/api_utils';
+import { api } from '../../../config';
 
 const WhitepaperReportById = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
@@ -111,7 +112,7 @@ const WhitepaperReportById = () => {
       }
     };
     try {
-      const data = await axios.get(`https://infiniteb2b.com:8443/admin/whitepaper-by-id-download-report?id=${id}`, config)
+      const data = await axios.get(`${api.API_URL}/admin/whitepaper-by-id-download-report?id=${id}`, config)
       setReports(data)
     } catch (error) {
       toast.error("Unable to fetch reports")
@@ -143,7 +144,7 @@ const WhitepaperReportById = () => {
                   theadClass="table-light"
                   SearchPlaceholder='Search for Whitepaper...'
                   isExport={true}
-                  downloadReport={() => downloadReport(token, `https://infiniteb2b.com:8443/admin/whitepaper-by-id-download-csv?id=${id}`, "whitepaperById.csv", id)}
+                  downloadReport={() => downloadReport(token, `${api.API_URL}/admin/whitepaper-by-id-download-csv?id=${id}`, "whitepaperById.csv", id)}
                 />
               </CardBody>
             </Card>

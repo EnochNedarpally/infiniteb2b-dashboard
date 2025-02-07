@@ -20,6 +20,7 @@ import TableContainer from "../../../Components/Common/TableContainer";
 import axios from "axios";
 import { mediaBaseURL } from "../../../helpers/api_helper";
 import ContentEditor from "../../../Components/Common/ContentEditor";
+import { api } from "../../../config";
 
 const AllBlogs = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
@@ -81,7 +82,7 @@ const AllBlogs = () => {
     },[blogContent])
   const fetchRandomRecords = async () => {
     try {
-      const response = await axios.get('https://infiniteb2b.com:8443/api/blogs/get-blogs-category',config);
+      const response = await axios.get(`${api.API_URL}/api/blogs/get-blogs-category`,config);
       setOptions(response.data.slice(0, 10).map(item => item))
     } catch (error) {
       console.error('Error fetching random records:', error);
@@ -89,7 +90,7 @@ const AllBlogs = () => {
   };
   const fetchBlogs=async()=>{
     try {
-      const data = await axios.get("https://infiniteb2b.com:8443/admin/allBlogs",config)
+      const data = await axios.get(`${api.API_URL}/admin/allBlogs`,config)
       setBlogs(data.data)
     } catch (error) {
       console.log("Blog error",error)
@@ -104,7 +105,7 @@ const AllBlogs = () => {
     }
     try {
 
-      const res = await axios.get(`https://infiniteb2b.com:8443/api/blogs/get-blogs-category?name=${query}`, config)
+      const res = await axios.get(`${api.API_URL}/api/blogs/get-blogs-category?name=${query}`, config)
       setOptions(res.data.slice(0, 10).map(item => item.name));
     } catch (error) {
       console.error('Error fetching search results:', error);
@@ -147,7 +148,7 @@ const AllBlogs = () => {
     try {
       const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.put(
-        'https://infiniteb2b.com:8443/api/blogs/edit-blogs',
+        `${api.API_URL}/api/blogs/edit-blogs`,
         formData,
         {
           headers: {
@@ -210,7 +211,7 @@ const AllBlogs = () => {
   }
   const handleConfirm = async()=>{
     try {
-      const data = await axios.delete(`https://infiniteb2b.com:8443/api/blogs/delete-blog/${blogData.id}`,config)
+      const data = await axios.delete(`${api.API_URL}/api/blogs/delete-blog/${blogData.id}`,config)
       toast.warn("Item Deleted")
       fetchBlogs()
       toggle()
@@ -271,7 +272,7 @@ const AllBlogs = () => {
            
               <li className="list-inline-item" title="View">
                 <Link to="#"
-                  onClick={() => { window.open(cell.row.original.viewPath ?? "https://infiniteb2b.com/Blog", '_blank'); }}
+                  onClick={() => { window.open(cell.row.original.viewPath ?? "https://infeedu.com/Blog", '_blank'); }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
@@ -292,7 +293,7 @@ const AllBlogs = () => {
     [handleBlogClick]
   );
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">
@@ -358,6 +359,7 @@ const AllBlogs = () => {
                                   </label>
                                    <ContentEditor content={Blog?.content ?? blogData.content} setContent={setBlogContent}/>
                                 </div>
+                                <div dangerouslySetInnerHTML = {{__html:blogData.content}}/>
                                 <div className="mb-3">
                                   <label htmlFor="category" className="form-label cursor-pointer">
                                     Category:

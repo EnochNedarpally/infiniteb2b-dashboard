@@ -18,6 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import TableContainer from "../../../Components/Common/TableContainer";
 
 import axios from "axios";
+import { api } from "../../../config";
 
 const AllBlogsCategory = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
@@ -62,7 +63,7 @@ const AllBlogsCategory = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    const data = await axios.get("https://infiniteb2b.com:8443/api/blogs/get-blogs-category", config)
+    const data = await axios.get(`${api.API_URL}/api/blogs/get-blogs-category`, config)
     setCategories(data.data)
 
   }
@@ -102,7 +103,7 @@ const AllBlogsCategory = () => {
     try {
       const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.put(
-        `https://infiniteb2b.com:8443/api/blogs/update-blogs-category/${categoryData.id}`,
+        `${api.API_URL}/api/blogs/update-blogs-category/${categoryData.id}`,
         formData,
         {
           headers: {
@@ -178,7 +179,7 @@ const AllBlogsCategory = () => {
 
               <li className="list-inline-item" title="View">
                 <Link to="/admin/all-category"
-                  onClick={() => { window.open(cell.row.original.url ?? "https://infiniteb2b.com/category", '_blank'); }}
+                  onClick={() => { window.open(cell.row.original.url ?? "https://infeedu.com/category", '_blank'); }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
@@ -199,7 +200,7 @@ const AllBlogsCategory = () => {
     [handleCategoryClick]
   );
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
       <div className="page-content">

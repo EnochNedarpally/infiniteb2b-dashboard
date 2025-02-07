@@ -26,6 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import TableContainer from "../../../../Components/Common/TableContainer";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../../../config";
 
 const AllUser = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
@@ -55,7 +56,7 @@ const AllUser = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    const data = await axios.get("https://infiniteb2b.com:8443/admin/get-alluser", config)
+    const data = await axios.get(`${api.API_URL}/admin/get-alluser`, config)
     setUsers(data.data)
 
   }
@@ -71,7 +72,7 @@ const AllUser = () => {
           'Authorization': `Bearer ${token}`
         }
       };
-      await axios.post("https://infiniteb2b.com:8443/update-user-status",formData  ,config)
+      await axios.post(`${api.API_URL}/update-user-status`,formData  ,config)
       fetchUsers();
       setModal(false)
     } catch (error) {
@@ -178,7 +179,7 @@ const AllUser = () => {
   );
 
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
       <div className="page-content">

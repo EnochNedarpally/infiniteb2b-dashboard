@@ -30,6 +30,7 @@ import TableContainer from "../../../Components/Common/TableContainer";
 import ExportCSVModal from "../../../Components/Common/ExportCSVModal";
 import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
+import { api } from "../../../config";
 
 const AllCategory = () => {
 
@@ -89,7 +90,7 @@ const AllCategory = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    const data = await axios.get("https://infiniteb2b.com:8443/api/category/dashboard-admin",config)
+    const data = await axios.get(`${api.API_URL}/api/category/dashboard-admin`,config)
     setCategories(data.data)
     
   }
@@ -264,7 +265,7 @@ const AllCategory = () => {
     try {
       const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/category/update',
+        `${api.API_URL}/api/category/update`,
         formData,
         {
           headers: {
@@ -338,7 +339,7 @@ const AllCategory = () => {
            
               <li className="list-inline-item" title="View">
                 <Link to="/admin/all-category" 
-                  onClick={() => { window.open(cell.row.original.url ?? "https://infiniteb2b.com/category", '_blank'); }}
+                  onClick={() => { window.open(cell.row.original.url ?? "https://infeedu.com/category", '_blank'); }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
@@ -359,7 +360,7 @@ const AllCategory = () => {
     [handleCategoryClick, checkedAll]
   );
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

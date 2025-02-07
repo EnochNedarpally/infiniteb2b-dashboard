@@ -4,7 +4,7 @@ import SimpleBar from "simplebar-react";
 //import logo
 import logoSm from "../assets/images/Infinite-b2b-1-scaled.png";
 import logoDark from "../assets/images/Infinite-b2b-1-scaled.png";
-import logoLight from "../assets/images/logo-light.png";
+import logoLight from "../assets/images/Infinite-b2b-1-scaled.png";
 
 //Import Components
 import VerticalLayout from "./VerticalLayouts";

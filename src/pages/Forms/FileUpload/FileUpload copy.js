@@ -438,6 +438,7 @@ import React, { useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import axios from 'axios';
+import { api } from '../../../config';
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
@@ -479,7 +480,7 @@ const FileUpload = () => {
     try {
       const token = 'eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJhdHVsLmt1bWFyQGRlbWFuZGF5LmNvbSIsImlhdCI6MTczMTkzOTA0MCwiZXhwIjoxNzMyMjk5MDQwfQ.vR-MLl-rP4WLEYHCDRieJShbJkVU04ZufCd0N5eRSpzNvI4kSGArFIVdTq4NcCmTHc1ScQNjjMkyImjJHUaX1w';
       const response = await axios.post(
-        'https://infiniteb2b.com/api/vendor/add-solutionset',
+        `${api.API_URL}/api/vendor/add-solutionset`,
         formData,
         {
           headers: {

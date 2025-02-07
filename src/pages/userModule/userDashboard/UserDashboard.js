@@ -8,7 +8,7 @@ import Sidebar from "../Sidebar";
 import UserWidget from "../../DashboardEcommerce/UserWidget";
 
 const UserDashboard = () => {
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
 
   const [rightColumn, setRightColumn] = useState(false);
   const toggleRightColumn = () => {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { api } from '../../config';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/user/login', // API Endpoint
+        `${api.API_URL}/api/user/login`, // API Endpoint
         {
           email, // Payload: Ensure this matches what the API expects
           password,

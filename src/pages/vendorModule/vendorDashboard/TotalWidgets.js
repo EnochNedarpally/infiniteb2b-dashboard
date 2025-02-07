@@ -5,6 +5,7 @@ import { Card, CardBody, Col } from 'reactstrap';
 // import { totalecomWidgets } from '../../common/data/dashboardEcommerce';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { api } from "../../../config";
 
 const TotalecomWidgets = () => {
   const [totalecomWidgets, setTotalecomWidgets] = useState([]);
@@ -23,7 +24,7 @@ const TotalecomWidgets = () => {
     
         try {
           const data = await axios.get(
-            "https://infiniteb2b.com:8443/api/vendor/dashboard",
+            `${api.API_URL}/api/vendor/dashboard`,
             config
           );
           const widgetsData = data.ecomWidgets; 

@@ -22,6 +22,7 @@ import axios from "axios";
 import logoLight from "../../../assets/images/Infinite-b2b-1-scaled.png";
 import ParticlesAuth from "../../AuthenticationInner/ParticlesAuth";
 import withRouter from "../../../Components/Common/withRouter";
+import { api } from '../../../config';
 
 const VendorLogin = (props) => {
   const [passwordShow, setPasswordShow] = useState(false);
@@ -54,7 +55,7 @@ const navigate =useNavigate()
             }
     
             const response = await axios.post(
-                "https://infiniteb2b.com:8443/api/vendor/login",
+                `${api.API_URL}/api/vendor/login`,
                 formData,
                 {
                     headers: {

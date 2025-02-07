@@ -41,6 +41,7 @@ import ExportCSVModal from "../../../Components/Common/ExportCSVModal";
 import Loader from "../../../Components/Common/Loader";
 import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
+import { api } from "../../../config";
 
 const AllVendors = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
@@ -102,7 +103,7 @@ const AllVendors = () => {
           'Authorization': `Bearer ${token}`
         }
       };
-      await axios.put(`https://infiniteb2b.com:8443/admin/${API_ENDPOINT}`, formData, config)
+      await axios.put(`${api.API_URL}/admin/${API_ENDPOINT}`, formData, config)
       setModal(false)
     } catch (error) {
       toast.error(error)
@@ -120,8 +121,7 @@ const AllVendors = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
-    const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allvendor",config)
+    const data = await axios.get(`${api.API_URL}/admin/get-allvendor`,config)
  
     setCategories(data.data)
     
@@ -361,7 +361,7 @@ const AllVendors = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

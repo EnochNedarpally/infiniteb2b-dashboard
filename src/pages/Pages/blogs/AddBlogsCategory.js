@@ -3,6 +3,7 @@ import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../../config';
 
 const AddBlogsCategory = () => {
 
@@ -28,7 +29,7 @@ const AddBlogsCategory = () => {
 
     try {
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/blogs/add-blogs-category',
+        `${api.API_URL}/api/blogs/add-blogs-category`,
         formData,
         {
           headers: {

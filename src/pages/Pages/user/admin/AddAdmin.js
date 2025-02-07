@@ -3,6 +3,7 @@ import { Card, CardBody, Col, Row, Container, CardHeader, Label } from 'reactstr
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import { api } from '../../../../config';
 
 const AddAdmin = () => {
   const [name, setName] = useState('');
@@ -52,7 +53,7 @@ const AddAdmin = () => {
 
     try {
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/register/admin',
+        `${api.API_URL}/register/admin`,
         formData,
         {
           headers: {

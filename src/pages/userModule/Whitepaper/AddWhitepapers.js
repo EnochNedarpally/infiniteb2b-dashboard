@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import axios from 'axios';
+import { api } from '../../../config';
 
 const VendorAddWhitepaper = () => {
   const [file, setFile] = useState(null);
@@ -32,7 +33,7 @@ const VendorAddWhitepaper = () => {
   }, []);
   const fetchRandomRecords = async () => {
     try {
-      const response = await axios.get('https://infiniteb2b.com:8443/api/category');
+      const response = await axios.get(`${api.API_URL}/api/category`);
       setOptions(response.data.data.slice(0, 10).map(item => item.name))
     } catch (error) {
       console.error('Error fetching random records:', error);
@@ -58,7 +59,7 @@ const VendorAddWhitepaper = () => {
     }
     try {
 
-      const res = await axios.get(`https://infiniteb2b.com:8443/api/category?name=${query}`, config)
+      const res = await axios.get(`${api.API_URL}/api/category?name=${query}`, config)
       setOptions(res.data.slice(0, 10).map(item => item.name));
     } catch (error) {
       console.error('Error fetching search results:', error);
@@ -102,7 +103,7 @@ const VendorAddWhitepaper = () => {
       const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX1ZFTkRPUiJdLCJzdWIiOiJwYW5rYWouZ2F3YWRlQG9kdGVhbXMuY29tIiwiaWF0IjoxNzMyNzAxMTI3LCJleHAiOjE3MzMwNjExMjd9.HwCqw0i8WHWAwvtw1lh2p8Z-HiF_Ma9YL2g1EMhl5z0rv-m-5ylzRIshPk9OBkHC2q4ilOgbME9o51zb5CePuw';
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/vendor/add-solutionset',
+        `${api.API_URL}/api/vendor/add-solutionset`,
         formData,
         {
           headers: {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardBody, Col, Container, Row } from 'reactstrap'
 import EditProfile from './EditProfile'
 import axios from 'axios'
+import { api } from '../../../config'
 
 const VendorProfile = () => {
   const [vendor, setVendor] = useState({})
@@ -18,7 +19,7 @@ const VendorProfile = () => {
         'Authorization': `Bearer ${vendorData.token}`
       }
     };
-    const data = await axios.get(`https://infiniteb2b.com:8443/api/vendor/by-id/${vendorData.data._id}`, config)
+    const data = await axios.get(`${api.API_URL}/api/vendor/by-id/${vendorData.data._id}`, config)
     setVendor(data.data)
 
   }

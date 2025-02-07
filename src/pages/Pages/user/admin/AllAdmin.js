@@ -46,6 +46,7 @@ import ExportCSVModal from "../../../../Components/Common/ExportCSVModal";
 import Loader from "../../../../Components/Common/Loader";
 import DeleteModal from "../../../../Components/Common/DeleteModal";
 import axios from "axios";
+import { api } from "../../../../config";
 
 const AllAdmin = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
@@ -113,7 +114,7 @@ const AllAdmin = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    const data = await axios.get("https://infiniteb2b.com:8443/admin/get-all-admin",config)
+    const data = await axios.get(`${api.API_URL}/admin/get-all-admin`,config)
     setCategories(data.data)
     
   }
@@ -401,7 +402,7 @@ const AllAdmin = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    await axios.post("https://infiniteb2b.com:8443/admin/update/status",formData  ,config)
+    await axios.post(`${api.API_URL}/admin/update/status`,formData  ,config)
     fetchCategories();
     setModal(false)
   } catch (error) {
@@ -409,7 +410,7 @@ const AllAdmin = () => {
     console.log(error)
   }
 }
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

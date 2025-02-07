@@ -6,6 +6,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import ContentEditor from '../../../Components/Common/ContentEditor';
+import { api } from '../../../config';
 
 const AddNewBlogs = () => {
   const [category, setCategory] = useState('');
@@ -34,7 +35,7 @@ const AddNewBlogs = () => {
 
   const fetchRandomRecords = async () => {
     try {
-      const response = await axios.get('https://infiniteb2b.com:8443/admin/allBlogsCategory',config);
+      const response = await axios.get(`${api.API_URL}/admin/allBlogsCategory`,config);
       setOptions(response.data?.slice(0, 10).map(item => item))
     } catch (error) {
       console.error('Error fetching random records:', error);
@@ -58,7 +59,7 @@ const AddNewBlogs = () => {
     }
     try {
 
-      const res = await axios.get(`https://infiniteb2b.com:8443/admin/allBlogsCategory?name=${query}`, config)
+      const res = await axios.get(`${api.API_URL}/admin/allBlogsCategory?name=${query}`, config)
       setOptions(res.data.slice(0, 10).map(item => item));
     } catch (error) {
       console.error('Error fetching search results:', error);
@@ -94,7 +95,7 @@ const AddNewBlogs = () => {
     try {
       
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/blogs/add-blogs',
+        `${api.API_URL}/api/blogs/add-blogs`,
         
         formData,
         {

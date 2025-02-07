@@ -41,6 +41,7 @@ import ExportCSVModal from "../../../Components/Common/ExportCSVModal";
 import Loader from "../../../Components/Common/Loader";
 import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
+import { api } from "../../../config";
 
 const ReviewVendor = () => {
  
@@ -102,9 +103,7 @@ const ReviewVendor = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
-    const data = await axios.get("https://infiniteb2b.com:8443/admin/get-reviewvendor",config)
-   console.log("databnbnbn", data)
+    const data = await axios.get(`${api.API_URL}/admin/get-reviewvendor`,config)
     setCategories(data.data)
     
   }
@@ -325,7 +324,7 @@ const ReviewVendor = () => {
     try {
       
         const response = await axios.put(
-            "https://infiniteb2b.com:8443/admin/approve-vendor",
+            `${api.API_URL}/admin/approve-vendor`,
             formData, 
             config
         );
@@ -358,7 +357,7 @@ const ReviewVendor = () => {
     try {
         // Making the PUT API call
         const response = await axios.put(
-            "https://infiniteb2b.com:8443/admin/reject-vendor",
+            `${api.API_URL}/admin/reject-vendor`,
             formData, 
             config
         );

@@ -28,6 +28,7 @@ import ExportCSVModal from "../../../Components/Common/ExportCSVModal";
 import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
 import { mediaBaseURL } from "../../../helpers/api_helper";
+import { api } from "../../../config";
 
 const AllWhitepapers = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")).token ?? null;
@@ -117,7 +118,7 @@ const AllWhitepapers = () => {
     }, [query])
   const fetchRandomRecords = async () => {
     try {
-      const response = await axios.get('https://infiniteb2b.com:8443/api/category',config);
+      const response = await axios.get(`${api.API_URL}/api/category`,config);
       setOptions(response.data.slice(0, 10).map(item => item.name))
       // console.log("response", response)
     } catch (error) {
@@ -126,7 +127,7 @@ const AllWhitepapers = () => {
   };
   const fetchWhitepapers=async()=>{
     try {
-      const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allwhitepapers?value=4",config)
+      const data = await axios.get(`${api.API_URL}/admin/get-allwhitepapers?value=4`,config)
       setCategories(data.data.whitepapers)
     } catch (error) {
       console.log("Whitepaper error",error)
@@ -140,7 +141,7 @@ const AllWhitepapers = () => {
     }
     try {
 
-      const res = await axios.get(`https://infiniteb2b.com:8443/api/category?name=${query}`, config)
+      const res = await axios.get(`${api.API_URL}/api/category?name=${query}`, config)
       // console.log("res.data", res.data)
       setOptions(res.data.slice(0, 10).map(item => item.name));
     } catch (error) {
@@ -184,7 +185,7 @@ const AllWhitepapers = () => {
     try {
       const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/vendor/update-solutionset',
+        `${api.API_URL}/api/vendor/update-solutionset`,
         formData,
         {
           headers: {
@@ -405,7 +406,7 @@ const AllWhitepapers = () => {
            
               <li className="list-inline-item" title="View">
                 <Link to="#"
-                  onClick={() => { window.open(cell.row.original.whitePaperUrl ?? "https://infiniteb2b.com/whitepaper", '_blank'); }}
+                  onClick={() => { window.open(cell.row.original.whitePaperUrl ?? "https://infeedu.com/whitepaper", '_blank'); }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
@@ -474,7 +475,7 @@ const AllWhitepapers = () => {
           'Authorization': `Bearer ${token}`
         }
       };
-      await axios.put(`https://infiniteb2b.com:8443/admin/reject-solutionset`, formData, config)
+      await axios.put(`${api.API_URL}/admin/reject-solutionset`, formData, config)
       toast.warn("Whitepaper Deleted")
       fetchWhitepapers()
       setModal(false)
@@ -486,7 +487,7 @@ const AllWhitepapers = () => {
 
   }
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

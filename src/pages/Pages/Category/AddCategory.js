@@ -3,6 +3,7 @@ import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { api } from '../../../config';
 
 const AddCategory = () => {
   const [file, setFile] = useState(null);
@@ -52,7 +53,7 @@ const AddCategory = () => {
       const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJDQU1QQUlHTk1BTkFHRVIiXSwic3ViIjoiY2FtcGFpZ25tYW5hZ2VyQGRlbWFuZGF5LmluZm8iLCJpYXQiOjE3MzI2OTY4NzgsImV4cCI6MTczMzA1Njg3OH0.PVZcsHqm8XiZzkMejYThVcHko1YEIdA26rNyuNFXDbCLuHKqPw2Q1mRH-OyWHOc5b4Ye9GXy6YXcIDPfbbXGTQ';
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/category/add',
+        `${api.API_URL}/api/category/add`,
         formData,
         {
           headers: {

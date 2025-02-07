@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Row, Container, CardHeader } from 'reactstrap';
 import axios from 'axios';
+import { api } from '../../../config';
 
 const ViewCampaign = () => {
   const [file, setFile] = useState(null);
@@ -56,7 +57,7 @@ const ViewCampaign = () => {
 
     try {
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/vendor/add-solutionset',
+        `${api.API_URL}/api/vendor/add-solutionset`,
         formData,
         {
           headers: {

@@ -40,6 +40,7 @@ import ExportCSVModal from "../../../Components/Common/ExportCSVModal";
 import Loader from "../../../Components/Common/Loader";
 import DeleteModal from "../../../Components/Common/DeleteModal";
 import axios from "axios";
+import { api } from "../../../config";
 
 const UserAllWhitepapers = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")).data.jwtToken ?? null;
@@ -105,8 +106,7 @@ const UserAllWhitepapers = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
-    const data = await axios.get("https://infiniteb2b.com:8443/admin/get-allwhitepapers",config)
+    const data = await axios.get(`${api.API_URL}/admin/get-allwhitepapers`,config)
     setCategories(data.data)
     
   }
@@ -378,7 +378,7 @@ const UserAllWhitepapers = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

@@ -41,6 +41,7 @@ import ExportCSVModal from "../../../../Components/Common/ExportCSVModal";
 import Loader from "../../../../Components/Common/Loader";
 import DeleteModal from "../../../../Components/Common/DeleteModal";
 import axios from "axios";
+import { api } from "../../../../config";
 
 
 
@@ -101,14 +102,12 @@ const AllCampaignManagers = () => {
   },[])
   const fetchCategories=async()=>{
     const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
-    // const token ="eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJTVVBFUkFETUlOIl0sInN1YiI6InN1cGVyYWRtaW5AZGVtYW5kYXkuaW5mbyIsImlhdCI6MTczMjg3MDQzMywiZXhwIjoxNzMzMjMwNDMzfQ.ne7d9Mseaabh-uNJEx7GOaa1Vd7G8JTLF8M45ZkDGKNm5N9u6IMSMMHvz5EdhYEJxljd1qCFjoXtUM42rlHmGQ"
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     };
-    // const data = await axios.get("https://infiniteb2b.com:8443/api/category",config)
-    const data = await axios.get("https://infiniteb2b.com:8443/admin/get-all-campaign-manager",config)
+    const data = await axios.get(`${api.API_URL}/admin/get-all-campaign-manager`,config)
  
     setCategories(data.data)
     
@@ -346,7 +345,7 @@ const AllCampaignManagers = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

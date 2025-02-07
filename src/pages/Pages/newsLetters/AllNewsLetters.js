@@ -21,6 +21,7 @@ import TableContainer from "../../../Components/Common/TableContainer";
 import axios from "axios";
 import { mediaBaseURL } from "../../../helpers/api_helper";
 import ContentEditor from "../../../Components/Common/ContentEditor";
+import { api } from "../../../config";
 
 
 
@@ -112,7 +113,7 @@ useEffect(()=>{
     }, [query])
   const fetchRandomRecords = async () => {
     try {
-      const response = await axios.get('https://infiniteb2b.com:8443/api/category',config);
+      const response = await axios.get(`${api.API_URL}/api/category`,config);
       setOptions(response.data.slice(0, 10).map(item => item.name))
     } catch (error) {
       console.error('Error fetching random records:', error);
@@ -120,7 +121,7 @@ useEffect(()=>{
   };
   const fetchNewsLetters=async()=>{
     try {
-      const data = await axios.get("https://infiniteb2b.com:8443/admin/allnewsletters",config)
+      const data = await axios.get(`${api.API_URL}/admin/allnewsletters`,config)
       setnewsLetters(data.data)
     } catch (error) {
       console.log("NewsLetter error",error)
@@ -134,7 +135,7 @@ useEffect(()=>{
     }
     try {
 
-      const res = await axios.get(`https://infiniteb2b.com:8443/api/category?name=${query}`, config)
+      const res = await axios.get(`${api.API_URL}/api/category?name=${query}`, config)
       setOptions(res.data.slice(0, 10).map(item => item.name));
     } catch (error) {
       console.error('Error fetching search results:', error);
@@ -177,7 +178,7 @@ useEffect(()=>{
     try {
       
       const response = await axios.put(
-        'https://infiniteb2b.com:8443/api/newsletter/edit-newsletter',
+        `${api.API_URL}/api/newsletter/edit-newsletter`,
         formData,
         {
           headers: {
@@ -276,7 +277,7 @@ useEffect(()=>{
            
               <li className="list-inline-item" title="View">
                 <Link to="#"
-                  onClick={() => { window.open(cell.row.original.viewPath ?? "https://infiniteb2b.com/NewsLetter", '_blank'); }}
+                  onClick={() => { window.open(cell.row.original.viewPath ?? "https://infeedu.com/NewsLetter", '_blank'); }}
                 >
                   <i className="ri-eye-fill align-bottom text-muted"></i>
                 </Link>
@@ -305,7 +306,7 @@ useEffect(()=>{
   }
   const handleConfirm = async()=>{
     try {
-      const data = await axios.delete(`https://infiniteb2b.com:8443/api/newsletter/delete-newsletter/${NewsLetterData.id}`,config)
+      const data = await axios.delete(`${api.API_URL}/api/newsletter/delete-newsletter/${NewsLetterData.id}`,config)
       navigate("/all-news-letters")
       toast.warn("Item Deleted")
       fetchNewsLetters()
@@ -318,7 +319,7 @@ useEffect(()=>{
    
   }
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">

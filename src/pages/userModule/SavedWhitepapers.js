@@ -40,6 +40,7 @@ import ExportCSVModal from "../../Components/Common/ExportCSVModal";
 import Loader from "../../Components/Common/Loader";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import axios from "axios";
+import { api } from "../../config";
 
 const SavedWhitepapers = () => {
   const token = JSON.parse(sessionStorage.getItem("authUser")).data.jwtToken ?? null;
@@ -82,8 +83,8 @@ const SavedWhitepapers = () => {
         'Authorization': `Bearer ${token}`
       }
     };
-    const data = await axios.get("https://infiniteb2b.com:8443/api/user/allwhitepapers-saved",config)
-    setCategories(data.data)
+    const data = await axios.get(`${api.API_URL}/api/user/allwhitepapers-saved`,config)
+    setWhitepaper(data.data.whitepapers)
     
   }
 
@@ -201,7 +202,7 @@ const SavedWhitepapers = () => {
   // Delete Multiple
   const [selectedCheckBoxDelete, setSelectedCheckBoxDelete] = useState([]);
   const [isMultiDeleteButton, setIsMultiDeleteButton] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [whitepaper, setWhitepaper] = useState([]);
 
   const deleteMultiple = () => {
     const checkall = document.getElementById("checkBoxAll");
@@ -241,7 +242,7 @@ const SavedWhitepapers = () => {
       },
       {
         header: "WhitePapers Name",
-        accessorKey: "whitePaperName",
+        accessorKey: "title",
         enableColumnFilter: false,
       },
 
@@ -251,7 +252,7 @@ const SavedWhitepapers = () => {
       
       {
         header: "WhitePapers Category",
-        accessorKey: "whitePaperSetName",
+        accessorKey: "category",
         enableColumnFilter: false,
       },
        
@@ -271,7 +272,7 @@ const SavedWhitepapers = () => {
       
             try {
               const response = await axios.put(
-                "https://infiniteb2b.com:8443/api/user/unsave-whitepaper",
+                `${api.API_URL}/api/user/unsave-whitepaper`,
                 formData,
                 config
               );
@@ -409,14 +410,14 @@ const SavedWhitepapers = () => {
   // Export Modal
   const [isExportCSV, setIsExportCSV] = useState(false);
 
-  document.title = "InfiniteB2B";
+  document.title = "Infeedu";
   return (
     <React.Fragment>
      <div className="page-content">
         <ExportCSVModal
           show={isExportCSV}
           onCloseClick={() => setIsExportCSV(false)}
-          data={categories ?? []}
+          data={whitepaper ?? []}
         />
         <DeleteModal
           show={deleteModal}
@@ -467,7 +468,7 @@ const SavedWhitepapers = () => {
                     {/* {isCompaniesSuccess && companies.length ? ( */}
                       <TableContainer
                         columns={columns}
-                        data={(categories ?? [])}
+                        data={(whitepaper ?? [])}
                         isGlobalFilter={true}
                         isAddUserList={false}
                         customPageSize={8}

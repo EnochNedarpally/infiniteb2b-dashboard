@@ -6,6 +6,7 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../../config';
 
 const AddWhitepaper = () => {
   const [file, setFile] = useState(null);
@@ -36,7 +37,7 @@ const AddWhitepaper = () => {
   }, []);
   const fetchRandomRecords = async () => {
     try {
-      const response = await axios.get('https://infiniteb2b.com:8443/api/category',config);
+      const response = await axios.get(`${api.API_URL}/api/category`,config);
       setOptions(response.data?.slice(0, 10).map(item => item.name))
       // console.log("response", response)
     } catch (error) {
@@ -65,7 +66,7 @@ const AddWhitepaper = () => {
     }
     try {
 
-      const res = await axios.get(`https://infiniteb2b.com:8443/api/category?name=${query}`, config)
+      const res = await axios.get(`${api.API_URL}/api/category?name=${query}`, config)
       // console.log("res.data", res.data)
       setOptions(res.data.slice(0, 10).map(item => item.name));
     } catch (error) {
@@ -109,7 +110,7 @@ const AddWhitepaper = () => {
     try {
       const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
       const response = await axios.post(
-        'https://infiniteb2b.com:8443/api/vendor/add-solutionset',
+        `${api.API_URL}/api/vendor/add-solutionset`,
         
         formData,
         {

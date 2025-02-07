@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useQuill } from "react-quilljs";
 import { toast, ToastContainer } from "react-toastify";
+import { api } from "../../config";
 
 export default ({content,setContent}) => {
   const token = JSON.parse(sessionStorage.getItem("authUser")) ? JSON.parse(sessionStorage.getItem("authUser")).token : null;
@@ -31,7 +32,7 @@ const saveToServer = async (file) => {
     formData.append('previewImage', file);
     try {
       const data =  await axios.post(
-        'https://infiniteb2b.com:8443/api/newsletter/upload-preview',
+        `${api.API_URL}/api/newsletter/upload-preview`,
         
         formData,
         {

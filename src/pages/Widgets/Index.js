@@ -12,7 +12,7 @@ import EcommerceWidgets from './EcommerceWidgets';
 import CreditCard from './CreditCard';
 
 const Widgets = () => {
-    document.title = "InfiniteB2B";
+    document.title = "Infeedu";
     return (
         <React.Fragment>
             <div className="page-content">
